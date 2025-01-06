@@ -1,8 +1,11 @@
 package ohonovskiy.ua.buycrypto.model.crypto;
 
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
+import ohonovskiy.ua.buycrypto.model.user.User;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -11,8 +14,13 @@ import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 @Data
 @Builder
 @ToString
-public class Coin extends SimpleEntityModel {
-    private String name;
+public class UserCoin extends SimpleEntityModel {
 
-    private Double price;
+    @ManyToOne
+    private User user;
+
+    @ManyToOne
+    private Coin coin;
+
+    private Double amount;
 }

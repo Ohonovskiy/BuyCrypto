@@ -5,13 +5,12 @@ import lombok.*;
 import ohonovskiy.ua.buycrypto.enums.Role;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
+import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -29,18 +28,19 @@ public class User extends SimpleEntityModel implements UserDetails {
 
     @Builder.Default
     @Column(nullable = false)
-    private Long balance = 0L;
+    private Double balance = 10000.0;
 
     @Column(nullable = false)
     @Builder.Default
     @Enumerated(EnumType.STRING)
     private Role role = Role.ROLE_ADMIN; //TODO CHANGE
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<UserCoin> userCoins = new ArrayList<>();
+
     @Builder.Default
     private boolean isEnabled = true;
-
-    @OneToMany
-    private List<Coin> coins;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
