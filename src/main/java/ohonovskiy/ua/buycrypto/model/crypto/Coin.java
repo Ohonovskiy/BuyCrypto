@@ -1,5 +1,6 @@
 package ohonovskiy.ua.buycrypto.model.crypto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
@@ -12,7 +13,11 @@ import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 @Builder
 @ToString
 public class Coin extends SimpleEntityModel {
-    private String name;
 
     private Double price;
+
+    @Column(unique = true)
+    private String name;
+
+    private String imgUrl;
 }

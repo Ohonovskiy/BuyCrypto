@@ -1,23 +1,90 @@
-!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Profile</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .balance {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .coins-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .coins-table th, .coins-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        .coins-table th {
+            background-color: #f8f8f8;
+        }
+        .coin-img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <h1>User Profile</h1>
-    <div class="card mt-4">
-        <div class="card-body">
-            <h3 th:text="${user.username}">Username</h3>
-            <p><strong>Role:</strong> <span th:text="${user.role}">ROLE_USER</span></p>
-            <p><strong>Status:</strong> <span th:text="${user.enabled ? 'Enabled' : 'Disabled'}">Enabled</span></p>
-        </div>
+<div class="container">
+    <div class="header">
+        <h1 th:text="'Welcome, ' + ${user.username} + '!'"></h1>
     </div>
-
-
+    <div class="balance">
+        Balance: $<span th:text="${user.balance}"></span>
+    </div>
+    <div class="coins">
+        <h2>Your Coins</h2>
+        <table class="coins-table">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Value ($)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="userCoin : ${user.userCoins}">
+                <td>
+                    <img th:src="${userCoin.coin.imgUrl}" th:alt="${userCoin.coin.name}" class="coin-img">
+                </td>
+                <td th:text="${userCoin.coin.name}"></td>
+                <td th:text="${userCoin.amount}"></td>
+                <td th:text="${userCoin.coin.price * userCoin.amount}"></td>
+            </tr>
+            <tr th:if="${user.userCoins.empty}">
+                <td colspan="4">You don't own any coins yet.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 </body>
 </html>

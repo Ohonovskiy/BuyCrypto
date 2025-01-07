@@ -4,10 +4,8 @@ import jakarta.transaction.Transactional;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
 import ohonovskiy.ua.buycrypto.model.user.User;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,7 +23,7 @@ public class TradingService {
 
         User currentUser = userService.getCurrentUser();
 
-        Coin coinToBuy = coinService.findByName(coinName);
+        Coin coinToBuy = coinService.getByName(coinName);
 
         double totalCost = coinToBuy.getPrice() * amount;
 

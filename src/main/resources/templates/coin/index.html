@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${coin.name}"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .coin-card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .coin-img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .coin-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .coin-price {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        .buy-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .buy-form input[type="number"] {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 80%;
+            font-size: 16px;
+        }
+        .buy-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .buy-form button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="coin-card">
+    <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
+    <div class="coin-name" th:text="${coin.name}"></div>
+    <div class="coin-price" th:text="'$' + ${coin.price}"></div>
+    <form th:action="@{/trading/buy}" method="post" class="buy-form">
+        <input type="hidden" name="coinName" th:value="${coin.name}">
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="Enter amount" required>
+        <button type="submit">Buy</button>
+    </form>
+</div>
+</body>
+</html>

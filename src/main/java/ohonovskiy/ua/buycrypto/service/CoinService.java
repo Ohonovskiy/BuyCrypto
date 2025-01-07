@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -35,16 +36,21 @@ public class CoinService {
         this.restTemplate = restTemplate;
     }
 
-    // execute every 15 seconds
-    @Scheduled(fixedRate = 15000)
+    // execute every 1 min
+    @Scheduled(fixedRate = 60000)
     public void updatePrices() {
         updateCoinPrices();
     }
 
-    public Coin findByName(String name) {
+    public Coin getByName(String name) {
         return coinRepo.findFirstByName(name.toUpperCase())
                 .orElseThrow(() -> new NoSuchElementException("No crypto with name: " + name + " was found"));
     }
+
+    public List<Coin> getAll() {
+        return coinRepo.findAll();
+    }
+
 
 
     public void updateCoinPrices() {
