@@ -57,7 +57,7 @@
 </head>
 <body>
 <div class="payment-card">
-  <div class="card-number" th:text="'Card Number: XXXX-XXXX-XXXX-' + ${user.getId()}"></div>
+  <div class="card-number">Card Number: XXXX-XXXX-XXXX-XXXX</div>
 
   <form th:action="@{/payment}" method="post" class="payment-form">
     <label for="amount">Amount ($):</label>
