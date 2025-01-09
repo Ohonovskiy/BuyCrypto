@@ -1,6 +1,7 @@
 package ohonovskiy.ua.buycrypto.model.user;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.enums.Role;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
@@ -28,7 +29,10 @@ public class User extends SimpleEntityModel implements UserDetails {
 
     @Builder.Default
     @Column(nullable = false)
-    private Double balance = 10000.0;
+    private Double balance = 0.0;
+
+    @Builder.Default
+    private Double invested = 0.0;
 
     @Column(nullable = false)
     @Builder.Default
@@ -58,4 +62,17 @@ public class User extends SimpleEntityModel implements UserDetails {
 
     @Override
     public boolean isEnabled() { return isEnabled; }
+
+    @Transactional
+    public void addBalance(Double addToBalance) {
+        this.setInvested(this.invested+=addToBalance);
+        this.balance += addToBalance;
+    }
+
+    public void setInvested(Double newInvested) {
+        if(newInvested < invested)
+            throw new IllegalArgumentException("Can't decrease the value.");
+
+        this.invested = newInvested;
+    }
 }

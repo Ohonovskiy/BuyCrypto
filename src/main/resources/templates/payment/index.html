@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f4f4f9;
+    }
+    .payment-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+    .card-number {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    .payment-form input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    .payment-form button {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .payment-form button:hover {
+      background-color: #218838;
+    }
+    .payment-code {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+<div class="payment-card">
+  <div class="card-number" th:text="'Card Number: XXXX-XXXX-XXXX-' + ${user.getId()}"></div>
+
+  <form th:action="@{/payment}" method="post" class="payment-form">
+    <label for="amount">Amount ($):</label>
+    <input
+            type="number"
+            id="amount"
+            name="amount"
+            step="0.01"
+            min="0.01"
+            placeholder="Enter amount"
+            required>
+    <button type="submit">Send Payment</button>
+  </form>
+
+  <div class="payment-code">
+    <span th:text="'Please specify this code in payment details: ' + ${user.getId() + '/' + #dates.createNow().time}"></span>
+  </div>
+</div>
+</body>
+</html>

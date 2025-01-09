@@ -61,6 +61,11 @@
         .buy-form button:hover {
             background-color: #0056b3;
         }
+        .dollar-amount {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #555;
+        }
     </style>
 </head>
 <body>
@@ -68,12 +73,108 @@
     <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
     <div class="coin-name" th:text="${coin.name}"></div>
     <div class="coin-price" th:text="'$' + ${coin.price}"></div>
+    <div class="coin-price" th:text="'Balance: $' + ${user.balance}"></div>
+
+    <!-- Buy Form -->
     <form th:action="@{/trading/buy}" method="post" class="buy-form">
         <input type="hidden" name="coinName" th:value="${coin.name}">
-        <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" step="0.01" min="0.01" placeholder="Enter amount" required>
+        <label for="amount">Amount to buy</label>
+        <input
+                type="number"
+                id="amount"
+                name="amount"
+                step="0.01"
+                min="0.01"
+                th:max="${user.getBalance() / coin.price}"
+                placeholder="Enter amount"
+                required>
+        <input
+                type="range"
+                id="slider-buy"
+                min="0"
+                max="100"
+                step="0.1">
+        <div id="buy-dollar" class="dollar-amount"></div>
         <button type="submit">Buy</button>
     </form>
+
+    <!-- Sell Form -->
+    <form th:if="${coinAmount > 0}" th:action="@{/trading/sell}" method="post" class="buy-form">
+        <input type="hidden" name="coinName" th:value="${coin.name}">
+        <label for="amount_sell" th:text="'Amount to sell (' + ${coinAmount} + ')'">Amount to sell</label>
+        <input
+                type="number"
+                id="amount_sell"
+                name="amount"
+                step="0.01"
+                min="0.01"
+                th:max="${coinAmount}"
+                placeholder="Enter amount"
+                required>
+        <input
+                type="range"
+                id="slider-sell"
+                min="0"
+                max="100"
+                step="0.1">
+        <div id="sell-dollar" class="dollar-amount"></div>
+        <button type="submit">Sell</button>
+    </form>
+
+    <script>
+        function synchronizeSliderWithField(sliderId, fieldId, dollarId, price) {
+            const slider = document.getElementById(sliderId);
+            const field = document.getElementById(fieldId);
+            const dollarField = document.getElementById(dollarId);
+
+            const enforceStepPrecision = (value, step) => {
+                return Math.round(value / step) * step;
+            };
+
+            // Update field when slider is moved
+            slider.addEventListener('input', () => {
+                const max = parseFloat(field.getAttribute('max'));
+                const min = parseFloat(field.getAttribute('min'));
+                const step = parseFloat(field.getAttribute('step'));
+                const percentage = slider.value / 100;
+
+                // Calculate the field value based on the slider position
+                let value = (percentage * (max - min)) + min;
+                value = enforceStepPrecision(value, step); // Round to step precision
+                field.value = value.toFixed(4);
+
+                // Update dollar value
+                dollarField.textContent = `~$${(value * price).toFixed(4)}`;
+            });
+
+            // Update slider and dollar value when field is changed
+            field.addEventListener('input', () => {
+                const max = parseFloat(field.getAttribute('max'));
+                const min = parseFloat(field.getAttribute('min'));
+                const step = parseFloat(field.getAttribute('step'));
+                let fieldValue = parseFloat(field.value);
+
+                // Clamp fieldValue to [min, max] and enforce step precision
+                fieldValue = Math.min(Math.max(fieldValue, min), max);
+                fieldValue = enforceStepPrecision(fieldValue, step);
+                field.value = fieldValue.toFixed(4);
+
+                // Update dollar value
+                dollarField.textContent = `~$${(fieldValue * price).toFixed(4)}`;
+
+                // Calculate the slider position based on the field value
+                const percentage = ((fieldValue - min) / (max - min)) * 100;
+                slider.value = Math.min(Math.max(percentage, 0), 100); // Clamp to [0, 100]
+            });
+        }
+
+        // Get coin price from the server
+        const coinPrice = parseFloat(document.querySelector('.coin-price').textContent.replace('$', ''));
+
+        // Initialize synchronization for both sliders
+        synchronizeSliderWithField('slider-buy', 'amount', 'buy-dollar', coinPrice);
+        synchronizeSliderWithField('slider-sell', 'amount_sell', 'sell-dollar', coinPrice);
+    </script>
 </div>
 </body>
 </html>

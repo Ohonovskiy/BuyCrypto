@@ -37,7 +37,7 @@ public class SpringConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/auth/sign-in")
-                        .defaultSuccessUrl("/booking", true)
+                        .defaultSuccessUrl("/", true)
                         .failureUrl("/auth/sign-in?error=true")
                         .permitAll()
                 )

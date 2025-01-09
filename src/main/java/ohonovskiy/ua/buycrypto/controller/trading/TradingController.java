@@ -19,6 +19,12 @@ public class TradingController {
     @PostMapping("/buy")
     public String postBuy(@RequestParam String coinName, @RequestParam Double amount) {
         tradingService.buyCoin(coinName, amount);
-        return "redirect:/user";
+        return "redirect:/coin/" + coinName;
+    }
+
+    @PostMapping("/sell")
+    public String postSell(@RequestParam String coinName, @RequestParam Double amount) {
+        tradingService.sellCoin(coinName, amount);
+        return "redirect:/coin/" + coinName;
     }
 }

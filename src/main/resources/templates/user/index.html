@@ -58,6 +58,10 @@
     </div>
     <div class="balance">
         Balance: $<span th:text="${user.balance}"></span>
+        <span><a th:href="@{/payment}">Not enough?</a></span>
+    </div>
+    <div class="balance">
+        ROI: $<span th:text="${roi}">0</span>
     </div>
     <div class="coins">
         <h2>Your Coins</h2>

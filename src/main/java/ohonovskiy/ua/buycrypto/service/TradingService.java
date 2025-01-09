@@ -52,4 +52,44 @@ public class TradingService {
         userService.save(currentUser);
     }
 
+    @Transactional
+    public void sellCoin(String coinName, Double amount) {
+
+        if (amount == null || amount <= 0) {
+            throw new IllegalArgumentException("Amount must be greater than zero");
+        }
+
+        User currentUser = userService.getCurrentUser();
+
+        Coin coinToSell = coinService.getByName(coinName);
+        if (coinToSell == null) {
+            throw new IllegalArgumentException("Coin not found: " + coinName);
+        }
+
+        Optional<UserCoin> existingUserCoin = currentUser.getUserCoins()
+                .stream()
+                .filter(userCoin -> userCoin.getCoin().equals(coinToSell))
+                .findFirst();
+
+        UserCoin userCoin = existingUserCoin.orElseThrow(() ->
+                new IllegalArgumentException("User doesn't have such coin: " + coinName));
+
+        if (userCoin.getAmount() < amount) {
+            throw new IllegalArgumentException("Insufficient coin amount to sell");
+        }
+
+        double totalCost = coinToSell.getPrice() * amount;
+
+        userCoin.setAmount(userCoin.getAmount() - amount);
+
+        if (userCoin.getAmount() == 0) {
+            currentUser.getUserCoins().remove(userCoin);
+        }
+
+        currentUser.setBalance(currentUser.getBalance() + totalCost);
+
+        userService.save(currentUser);
+    }
+
+
 }
