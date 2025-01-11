@@ -1,5 +1,6 @@
 package ohonovskiy.ua.buycrypto.service;
 
+import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
 import ohonovskiy.ua.buycrypto.model.user.User;
@@ -42,9 +43,9 @@ public class CoinService {
     }
 
     // execute every 1 min
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 60_000)
     public void updatePrices() {
-        updateCoinPrices();
+        updateCoinPricesAndSaveChart();
     }
 
 
@@ -81,7 +82,9 @@ public class CoinService {
 
 
 
-    public void updateCoinPrices() {
+    public void updateCoinPricesAndSaveChart() {
+
+        // Getting coin info
         String apiUrl = String.format(
                 "https://api.coingecko.com/api/v3/simple/price?ids=%s&vs_currencies=usd",
                 String.join(",", STANDARD_COIN_NAMES)
@@ -101,15 +104,28 @@ public class CoinService {
                 String symbol = coinId.toUpperCase();
                 Double price = data.get("usd");
 
+                Chart chart = new Chart();
+
+                // coin already exists ? update price and save chart : create new coin and save chart
                 coinRepo.findFirstByName(symbol).ifPresentOrElse(
                         coin -> {
+                            chart.setCoin(coin);
+                            chart.setPrice(price);
+
                             coin.setPrice(price);
+                            coin.addChart(chart);
+
                             coinRepo.save(coin);
                         },
                         () -> {
                             Coin newCoin = new Coin();
+                            chart.setPrice(price);
+                            chart.setCoin(newCoin);
+
                             newCoin.setName(symbol);
                             newCoin.setPrice(price);
+                            newCoin.addChart(chart);
+
                             coinRepo.save(newCoin);
                         }
                 );
