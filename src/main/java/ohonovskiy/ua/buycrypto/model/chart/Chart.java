@@ -1,5 +1,6 @@
 package ohonovskiy.ua.buycrypto.model.chart;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -19,6 +20,7 @@ public class Chart extends SimpleEntityModel {
 
     private Double price;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     private Coin coin;
 

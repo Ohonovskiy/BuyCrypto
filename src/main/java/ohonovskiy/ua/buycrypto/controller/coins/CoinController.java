@@ -1,5 +1,6 @@
 package ohonovskiy.ua.buycrypto.controller.coins;
 
+import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.service.ChartService;
 import ohonovskiy.ua.buycrypto.service.CoinService;
 import ohonovskiy.ua.buycrypto.service.UserService;
