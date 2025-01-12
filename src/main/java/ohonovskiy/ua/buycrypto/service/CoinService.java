@@ -8,7 +8,6 @@ import ohonovskiy.ua.buycrypto.repository.CoinRepo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -40,12 +39,6 @@ public class CoinService {
         this.coinRepo = coinRepo;
         this.restTemplate = restTemplate;
         this.userService = userService;
-    }
-
-    // execute every 1 min
-    @Scheduled(fixedRate = 60_000)
-    public void updatePrices() {
-        updateCoinPricesAndSaveChart();
     }
 
 
@@ -82,7 +75,7 @@ public class CoinService {
 
 
 
-    public void updateCoinPricesAndSaveChart() {
+    protected void updateCoinPricesAndSaveChart() {
 
         // Getting coin info
         String apiUrl = String.format(

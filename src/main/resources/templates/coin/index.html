@@ -1,31 +1,40 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${coin.name} + ' Price History'"></title>
+    <title th:text="${coin.name} + ' Trading'"></title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            height: 100vh;
+        }
+        .chart-container {
+            flex: 3;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+        }
+        .trading-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f9;
         }
-        .coin-card {
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            width: 300px;
+        .coin-info {
             text-align: center;
+            margin-bottom: 20px;
         }
         .coin-img {
             border-radius: 50%;
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             margin-bottom: 10px;
         }
@@ -36,125 +45,133 @@
         }
         .coin-price {
             font-size: 18px;
-            margin-bottom: 15px;
-        }
-        .buy-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .buy-form input[type="number"] {
             margin-bottom: 10px;
-            padding: 5px;
-            width: 80%;
+        }
+        .balance {
             font-size: 16px;
-        }
-        .buy-form button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .buy-form button:hover {
-            background-color: #0056b3;
-        }
-        .dollar-amount {
-            margin-top: 5px;
-            font-size: 14px;
             color: #555;
         }
-        #chart-container {
-            margin-top: 20px;
+        .trading-form {
             width: 100%;
-            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .trading-form input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .trading-form button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        .trading-form button:hover {
+            background-color: #0056b3;
+        }
+        .trading-form button.sell {
+            background-color: #dc3545;
+        }
+        .trading-form button.sell:hover {
+            background-color: #c82333;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment"></script> <!-- Додано Moment.js для роботи з датами -->
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script> <!-- Адаптер для Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
 </head>
 <body>
-<div class="coin-card">
-    <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
-    <div class="coin-name" th:text="${coin.name}"></div>
-    <div class="coin-price" th:text="'$' + ${coin.price}"></div>
-    <div class="coin-price" th:text="'Balance: $' + ${user.balance}"></div>
+<!-- Графік -->
+<div class="chart-container">
+    <canvas id="coinChart"></canvas>
+</div>
 
-    <!-- Buy Form -->
-    <form th:action="@{/trading/buy}" method="post" class="buy-form">
+<!-- Панель торгівлі -->
+<div class="trading-container">
+    <div class="coin-info">
+        <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
+        <div class="coin-name" th:text="${coin.name}"></div>
+        <div class="coin-price" th:text="'$' + ${coin.price}"></div>
+        <div class="balance" th:text="'Balance: $' + ${user.balance}"></div>
+    </div>
+
+    <!-- Форма купівлі -->
+    <form th:action="@{/trading/buy}" method="post" class="trading-form">
         <input type="hidden" name="coinName" th:value="${coin.name}">
-        <label for="amount">Amount to buy</label>
-        <input type="number" id="amount" name="amount" step="0.01" min="0.01" th:max="${user.getBalance() / coin.price}" placeholder="Enter amount" required>
+        <label for="buyAmount">Amount to buy</label>
+        <input type="number" id="buyAmount" name="amount" step="0.01" min="0.01" th:max="${user.getBalance() / coin.price}" placeholder="Enter amount" required>
         <button type="submit">Buy</button>
     </form>
 
-    <!-- Chart Section -->
-    <div id="chart-container">
-        <canvas id="coinChart"></canvas>
-    </div>
+    <!-- Форма продажу -->
+    <form th:action="@{/trading/sell}" method="post" class="trading-form">
+        <input type="hidden" name="coinName" th:value="${coin.name}">
+        <label for="sellAmount">Amount to sell</label>
+        <input type="number" id="sellAmount" name="amount" step="0.01" min="0.01" th:max="${coinAmount}" placeholder="Enter amount" required>
+        <button type="submit" class="sell">Sell</button>
+    </form>
+</div>
 
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        // Отримуємо дані з моделі Thymeleaf
-        const charts = /*[[${charts}]]*/ [];
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const charts = /*[[${charts}]]*/ [];
 
-        // Перевіряємо, чи є дані
-        if (charts && charts.length > 0) {
-            // Підготуємо дані для графіка
-            const labels = charts.map(chart => new Date(chart.createdOn)); // Конвертуємо рядок у об'єкт Date
-            const prices = charts.map(chart => chart.price);
+    if (charts && charts.length > 0) {
+        const labels = charts.map(chart => new Date(chart.createdOn));
+        const prices = charts.map(chart => chart.price);
 
-            // Створюємо графік
-            const ctx = document.getElementById('coinChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels, // Використовуємо об'єкти Date для міток
-                    datasets: [{
-                        label: 'Price (USD)',
-                        data: prices,
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 2,
-                        pointRadius: 3,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            type: 'time', // Використовуємо часову шкалу
-                            time: {
-                                unit: 'minute', // Одиниця часу (хвилина)
-                                tooltipFormat: 'MMM DD, YYYY HH:mm', // Формат часу для підказок
-                                displayFormats: {
-                                    minute: 'HH:mm', // Формат відображення для хвилин
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Date'
+        const ctx = document.getElementById('coinChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Price (USD)',
+                    data: prices,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'minute',
+                            tooltipFormat: 'MMM DD, YYYY HH:mm',
+                            displayFormats: {
+                                minute: 'HH:mm',
                             }
                         },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Price (USD)'
-                            }
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price (USD)'
                         }
                     }
                 }
-            });
-        } else {
-            console.error("No chart data available.");
-            document.getElementById('chart-container').innerHTML = "<p>No chart data available.</p>";
-        }
-        /*]]>*/
-    </script>
-</div>
+            }
+        });
+    } else {
+        console.error("No chart data available.");
+        document.getElementById('coinChart').innerHTML = "<p>No chart data available.</p>";
+    }
+    /*]]>*/
+</script>
 </body>
 </html>

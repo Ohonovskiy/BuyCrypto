@@ -20,8 +20,14 @@ public class TradingService {
 
     @Transactional
     public void buyCoin(String coinName, Double amount) {
+        buyCoin(coinName, amount, userService.getCurrentUser());
+    }
 
-        User currentUser = userService.getCurrentUser();
+    @Transactional
+    public void buyCoin(String coinName, Double amount, User user) {
+
+        User currentUser = userService.getByUsername(user.getUsername())
+                .orElseThrow(IllegalArgumentException::new);
 
         Coin coinToBuy = coinService.getByName(coinName);
 
@@ -54,12 +60,17 @@ public class TradingService {
 
     @Transactional
     public void sellCoin(String coinName, Double amount) {
+        sellCoin(coinName, amount, userService.getCurrentUser());
+    }
 
+    @Transactional
+    public void sellCoin(String coinName, Double amount, User user) {
         if (amount == null || amount <= 0) {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
 
-        User currentUser = userService.getCurrentUser();
+        User currentUser = userService.getByUsername(user.getUsername())
+                .orElseThrow(IllegalArgumentException::new);
 
         Coin coinToSell = coinService.getByName(coinName);
         if (coinToSell == null) {
@@ -90,6 +101,5 @@ public class TradingService {
 
         userService.save(currentUser);
     }
-
 
 }
