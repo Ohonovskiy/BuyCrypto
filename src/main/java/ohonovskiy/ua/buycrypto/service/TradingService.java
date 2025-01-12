@@ -85,10 +85,6 @@ public class TradingService {
         UserCoin userCoin = existingUserCoin.orElseThrow(() ->
                 new IllegalArgumentException("User doesn't have such coin: " + coinName));
 
-        if (userCoin.getAmount() < amount) {
-            throw new IllegalArgumentException("Insufficient coin amount to sell");
-        }
-
         double totalCost = coinToSell.getPrice() * amount;
 
         userCoin.setAmount(userCoin.getAmount() - amount);

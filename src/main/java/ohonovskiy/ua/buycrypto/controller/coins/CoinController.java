@@ -1,6 +1,5 @@
 package ohonovskiy.ua.buycrypto.controller.coins;
 
-import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.service.ChartService;
 import ohonovskiy.ua.buycrypto.service.CoinService;
 import ohonovskiy.ua.buycrypto.service.UserService;
@@ -9,9 +8,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/coin")
