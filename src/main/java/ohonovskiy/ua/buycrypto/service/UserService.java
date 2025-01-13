@@ -2,6 +2,7 @@ package ohonovskiy.ua.buycrypto.service;
 
 
 import ohonovskiy.ua.buycrypto.DTO.UsernamePasswordRequest;
+import ohonovskiy.ua.buycrypto.enums.OrderType;
 import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.repository.UserRepo;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,6 +35,28 @@ public class UserService implements UserDetailsService {
     public void deleteById(Long id) {
         userRepo.deleteById(id);
     }
+
+    public Double calculateROI() {
+        User currentUser = getCurrentUser();
+
+        Double sellOrdersValue = currentUser.getOrders().stream()
+                .filter(order -> order.getOrderType() == OrderType.ORDER_SELL)
+                .mapToDouble(order -> order.getAmount() * order.getCoin().getPrice())
+                .sum();
+
+        Double buyOrdersValue = currentUser.getOrders().stream()
+                .filter(order -> order.getOrderType() == OrderType.ORDER_BUY)
+                .mapToDouble(order -> order.getAmount() * order.getPrice())
+                .sum();
+
+        Double coinValue = currentUser.getUserCoins().stream()
+                .mapToDouble(uc -> uc.getCoin().getPrice() * uc.getAmount())
+                .sum();
+
+        // ROI = Current Balance + Total Coin Value + Sell Orders - Buy Orders - Initial Investment
+        return currentUser.getBalance() + coinValue - sellOrdersValue - buyOrdersValue - currentUser.getInvested();
+    }
+
 
     public Optional<User> getByUsername(String username) {
         return userRepo.findFirstByUsername(username);

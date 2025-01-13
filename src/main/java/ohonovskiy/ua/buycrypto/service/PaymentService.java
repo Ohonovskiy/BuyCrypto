@@ -14,7 +14,7 @@ public class PaymentService {
     public void addToBalance(Double balanceToAdd) {
         User currentUser = userService.getCurrentUser();
 
-        currentUser.addBalance(balanceToAdd);
+        currentUser.invest(balanceToAdd);
 
         userService.save(currentUser);
     }

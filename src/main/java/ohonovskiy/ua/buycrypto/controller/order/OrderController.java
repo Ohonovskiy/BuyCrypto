@@ -2,12 +2,10 @@ package ohonovskiy.ua.buycrypto.controller.order;
 
 import ohonovskiy.ua.buycrypto.DTO.OrderDTO;
 import ohonovskiy.ua.buycrypto.service.OrderService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/order")
@@ -24,8 +22,11 @@ public class OrderController {
         return "order/index";
     }
 
-    @PostMapping
-    public String postOrder(@RequestBody OrderDTO orderDTO) {
+    @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String postOrder(@ModelAttribute OrderDTO orderDTO) {
+
+        System.out.println(orderDTO);
+
         orderService.placeOrder(orderService.OrderDTOToOrder(orderDTO));
         return "redirect:/order";
     }

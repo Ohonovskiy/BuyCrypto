@@ -17,10 +17,12 @@ import java.util.Optional;
 public class OrderService {
     private final OrderRepo orderRepo;
     private final UserService userService;
+    private final CoinService coinService;
 
-    public OrderService(OrderRepo orderRepo, UserService userService) {
+    public OrderService(OrderRepo orderRepo, UserService userService, CoinService coinService) {
         this.orderRepo = orderRepo;
         this.userService = userService;
+        this.coinService = coinService;
     }
 
     public List<Order> getAllForCurrentUser() {
@@ -106,7 +108,7 @@ public class OrderService {
         return Order.builder()
                 .orderType(orderDTO.getOrderType())
                 .amount(orderDTO.getAmount())
-                .coin(orderDTO.getCoin())
+                .coin(coinService.getByName(orderDTO.getCoinName()))
                 .price(orderDTO.getPrice())
                 .build();
     }

@@ -25,7 +25,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 10px;
+            height: fit-content;
         }
         .coin-info {
             text-align: center;
@@ -51,11 +52,28 @@
             font-size: 16px;
             color: #555;
         }
+        .card {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #efefef;
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
         .trading-form {
-            width: 100%;
             display: flex;
             flex-direction: column;
             gap: 10px;
+        }
+        .trading-form label {
+            font-size: 14px;
+            color: #333;
         }
         .trading-form input[type="number"] {
             padding: 10px;
@@ -87,41 +105,75 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
 </head>
 <body>
-<!-- Графік -->
+<!-- Chart Section -->
 <div class="chart-container">
     <canvas id="coinChart"></canvas>
 </div>
 
-<!-- Панель торгівлі -->
+<!-- Trading Panel -->
 <div class="trading-container">
     <div class="coin-info">
         <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
         <div class="coin-name" th:text="${coin.name}"></div>
         <div class="coin-price" th:text="'$' + ${coin.price}"></div>
         <div class="balance" th:text="'Balance: $' + ${user.balance}"></div>
+        <div class="balance" th:text="'Coins: ' + ${coinAmount}"></div>
     </div>
 
-    <!-- Форма купівлі -->
-    <form th:action="@{/trading/buy}" method="post" class="trading-form">
-        <input type="hidden" name="coinName" th:value="${coin.name}">
-        <label for="buyAmount">Amount to buy</label>
-        <input type="number" id="buyAmount" name="amount" step="0.01" min="0.01" th:max="${user.getBalance() / coin.price}" placeholder="Enter amount" required>
-        <button type="submit">Buy</button>
-    </form>
+    <!-- Instant Buy/Sell Section -->
+    <div class="card">
+        <h3>Instant Buy/Sell</h3>
+        <form th:action="@{/trading/buy}" method="post" class="trading-form">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="buyAmount">Amount to buy</label>
+            <input type="number" id="buyAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${user.getBalance() / coin.price}" placeholder="Enter amount" required>
+            <button type="submit">Buy</button>
+        </form>
+        <form th:action="@{/trading/sell}" method="post" class="trading-form">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="sellAmount">Amount to sell</label>
+            <input type="number" id="sellAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${coinAmount}" placeholder="Enter amount" required>
+            <button type="submit" class="sell">Sell</button>
+        </form>
+    </div>
 
-    <!-- Форма продажу -->
-    <form th:action="@{/trading/sell}" method="post" class="trading-form">
-        <input type="hidden" name="coinName" th:value="${coin.name}">
-        <label for="sellAmount">Amount to sell</label>
-        <input type="number" id="sellAmount" name="amount" step="0.01" min="0.01" th:max="${coinAmount}" placeholder="Enter amount" required>
-        <button type="submit" class="sell">Sell</button>
-    </form>
+    <!-- Order Creation Section -->
+    <div class="card">
+        <h3>Place Buy Order</h3>
+        <form th:action="@{/order}" method="post" class="trading-form">
+            <input type="hidden" name="orderType" value="ORDER_BUY">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="buyOrderAmount">Amount to buy</label>
+            <input type="number" id="buyOrderAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${user.balance / coin.price}" placeholder="Enter amount" required>
+            <label for="buyOrderPrice">Price</label>
+            <input type="number" id="buyOrderPrice" name="price" step="0.01" min="0.01"
+                   th:value="${coin.price}" placeholder="Enter price" required>
+            <button type="submit">Place Buy Order</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Place Sell Order</h3>
+        <form th:action="@{/order}" method="post" class="trading-form">
+            <input type="hidden" name="orderType" value="ORDER_SELL">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="sellOrderAmount">Amount to sell</label>
+            <input type="number" id="sellOrderAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${coinAmount}" placeholder="Enter amount" required>
+            <label for="sellOrderPrice">Price</label>
+            <input type="number" id="sellOrderPrice" name="price" step="0.01" min="0.01"
+                   th:value="${coin.price}" placeholder="Enter price" required>
+            <button type="submit" class="sell">Place Sell Order</button>
+        </form>
+    </div>
 </div>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
     const charts = /*[[${charts}]]*/ [];
-
     if (charts && charts.length > 0) {
         const labels = charts.map(chart => new Date(chart.createdOn));
         const prices = charts.map(chart => chart.price);

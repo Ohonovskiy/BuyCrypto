@@ -3,7 +3,6 @@ package ohonovskiy.ua.buycrypto.service;
 import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
-import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.repository.CoinRepo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -41,18 +40,6 @@ public class CoinService {
         this.userService = userService;
     }
 
-
-    // calculating ROI using owned coin's prices and user balance
-    public Double calculateROI() {
-        User currentUser = userService.getCurrentUser();
-
-        Double coinValue = currentUser.getUserCoins()
-                .stream()
-                .mapToDouble(uc -> uc.getCoin().getPrice() * uc.getAmount())
-                .sum();
-
-        return currentUser.getBalance() + coinValue - currentUser.getInvested();
-    }
 
     public Double getCoinAmountForCurrentUser(String coinName) {
 

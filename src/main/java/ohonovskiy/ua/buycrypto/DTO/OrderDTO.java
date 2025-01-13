@@ -1,13 +1,14 @@
 package ohonovskiy.ua.buycrypto.DTO;
 
 import lombok.Data;
+import lombok.ToString;
 import ohonovskiy.ua.buycrypto.enums.OrderType;
-import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 
 @Data
+@ToString
 public class OrderDTO {
 
-    private Coin coin;
+    private String coinName;
 
     private Double amount;
 

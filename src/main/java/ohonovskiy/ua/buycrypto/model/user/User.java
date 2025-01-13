@@ -89,4 +89,9 @@ public class User extends SimpleEntityModel implements UserDetails {
     public void addBalance(Double balanceToAdd) {
         this.balance += balanceToAdd;
     }
+
+    public void invest(Double sum) {
+        this.balance += sum;
+        this.invested += sum;
+    }
 }
