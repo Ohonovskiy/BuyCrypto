@@ -124,7 +124,7 @@ public class OrderService {
 
         if (currentUser.getOrders().contains(order)) {
             if(order.getOrderType().equals(OrderType.ORDER_SELL)) {
-                tradingService.addCoinToUser(currentUser, order.getCoin(), order.getAmount());
+                tradingService.coinService.addCoinToUser(currentUser, order.getCoin(), order.getAmount());
             } else if (order.getOrderType().equals(OrderType.ORDER_BUY)) {
                 currentUser.addBalance(order.getAmount() * order.getPrice());
             }

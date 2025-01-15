@@ -3,6 +3,7 @@ package ohonovskiy.ua.buycrypto.service;
 import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
+import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.repository.CoinRepo;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -113,4 +114,41 @@ public class CoinService {
         }
     }
 
+    public void addCoinToUser(User user, Coin coin, Double amount) {
+        Optional<UserCoin> existingUserCoin = user.getUserCoins()
+                .stream()
+                .filter(userCoin -> userCoin.getCoin().equals(coin))
+                .findFirst();
+
+        if (existingUserCoin.isPresent()) {
+            UserCoin userCoin = existingUserCoin.get();
+            userCoin.setAmount(userCoin.getAmount() + amount);
+        } else {
+            UserCoin newUserCoin = new UserCoin();
+            newUserCoin.setUser(user);
+            newUserCoin.setCoin(coin);
+            newUserCoin.setAmount(amount);
+            user.getUserCoins().add(newUserCoin);
+        }
+    }
+
+    public void removeCoinFromUser(User user, Coin coin, Double amount) {
+        Optional<UserCoin> existingUserCoin = user.getUserCoins()
+                .stream()
+                .filter(userCoin -> userCoin.getCoin().equals(coin))
+                .findFirst();
+
+        UserCoin userCoin = existingUserCoin.orElseThrow(() ->
+                new IllegalArgumentException("User doesn't have such coin: " + coin.getName()));
+
+        if (userCoin.getAmount() < amount) {
+            throw new IllegalArgumentException("Not enough coins to sell");
+        }
+
+        userCoin.setAmount(userCoin.getAmount() - amount);
+
+        if (userCoin.getAmount() == 0) {
+            user.getUserCoins().remove(userCoin);
+        }
+    }
 }
