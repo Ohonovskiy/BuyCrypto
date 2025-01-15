@@ -18,11 +18,13 @@ public class OrderService {
     private final OrderRepo orderRepo;
     private final UserService userService;
     private final CoinService coinService;
+    private final TradingService tradingService;
 
-    public OrderService(OrderRepo orderRepo, UserService userService, CoinService coinService) {
+    public OrderService(OrderRepo orderRepo, UserService userService, CoinService coinService, TradingService tradingService) {
         this.orderRepo = orderRepo;
         this.userService = userService;
         this.coinService = coinService;
+        this.tradingService = tradingService;
     }
 
     public List<Order> getAllForCurrentUser() {
@@ -113,10 +115,20 @@ public class OrderService {
                 .build();
     }
 
-    // TODO return coins\balance
     @Transactional
-    public void removeOrder(Order order) {
+    public void cancelOrder(Long orderId) {
+
+        Order order = orderRepo.getReferenceById(orderId);
+
         User currentUser = userService.getCurrentUser();
+
+        if (currentUser.getOrders().contains(order)) {
+            if(order.getOrderType().equals(OrderType.ORDER_SELL)) {
+                tradingService.addCoinToUser(currentUser, order.getCoin(), order.getAmount());
+            } else if (order.getOrderType().equals(OrderType.ORDER_BUY)) {
+                currentUser.addBalance(order.getAmount() * order.getPrice());
+            }
+        } else throw new IllegalArgumentException("Wrong order id: " + orderId);
 
         currentUser.removeOrder(order);
 

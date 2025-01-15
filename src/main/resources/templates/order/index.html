@@ -38,6 +38,18 @@
         .order-type-sell {
             color: red;
         }
+        .cancel-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .cancel-button:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -49,6 +61,7 @@
         <th>Amount</th>
         <th>Price</th>
         <th>Type</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -57,9 +70,15 @@
         <td th:text="${order.amount}"></td>
         <td th:text="'$' + ${order.price}"></td>
         <td>
-                    <span th:class="${order.orderType.name() == 'BUY' ? 'order-type-buy' : 'order-type-sell'}"
-                          th:text="${order.orderType.name()}">
-                    </span>
+            <span th:class="${order.orderType.name() == 'BUY' ? 'order-type-buy' : 'order-type-sell'}"
+                  th:text="${order.orderType.name()}"></span>
+        </td>
+        <td>
+            <form th:action="@{/order/cancel}" method="post" style="display: inline;">
+                <input type="hidden" name="orderId" th:value="${order.id}" />
+                <button type="submit" class="cancel-button">Cancel</button>
+            </form>
+
         </td>
     </tr>
     </tbody>

@@ -25,9 +25,14 @@ public class OrderController {
     @PostMapping(consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String postOrder(@ModelAttribute OrderDTO orderDTO) {
 
-        System.out.println(orderDTO);
-
         orderService.placeOrder(orderService.OrderDTOToOrder(orderDTO));
+        return "redirect:/order";
+    }
+
+    @PostMapping(value = "/cancel", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public String postCancel(@RequestParam Long orderId) {
+        orderService.cancelOrder(orderId);
+
         return "redirect:/order";
     }
 
