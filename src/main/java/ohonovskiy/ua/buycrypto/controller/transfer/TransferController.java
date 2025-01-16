@@ -1,13 +1,16 @@
 package ohonovskiy.ua.buycrypto.controller.transfer;
 
-import ohonovskiy.ua.buycrypto.DTO.transfer.TransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.transfer.CoinTransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.transfer.MoneyTransferRequest;
 import ohonovskiy.ua.buycrypto.service.CoinService;
 import ohonovskiy.ua.buycrypto.service.TransferService;
 import ohonovskiy.ua.buycrypto.service.UserService;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/transfer")
@@ -31,9 +34,16 @@ public class TransferController {
         return "transfer/index";
     }
 
-    @PostMapping
-    public String postTransfer(@ModelAttribute TransferRequest transferRequest) {
-        transferService.handleRequest(transferRequest);
+    @PostMapping("/money")
+    public String postTransferMoney(@ModelAttribute MoneyTransferRequest moneyTransferRequest) {
+        transferService.handleRequest(moneyTransferRequest);
+
+        return "redirect:/user";
+    }
+
+    @PostMapping("/coin")
+    public String postTransferCoin(@ModelAttribute CoinTransferRequest coinTransferRequest) {
+        transferService.handleRequest(coinTransferRequest);
 
         return "redirect:/user";
     }

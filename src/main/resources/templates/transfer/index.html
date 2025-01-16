@@ -14,13 +14,19 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Money Transfer</h5>
-                    <form action="/transfer" method="post">
+                    <form action="/transfer/money" method="post">
                         <input type="hidden" name="type" value="MoneyTransferRequest">
 
 
                         <div class="form-group">
                             <label for="moneyAmount" th:text="'Amount to send. (Up to ' + ${balance} + ')'"></label>
-                            <input type="number" class="form-control" id="moneyAmount" name="amount" required th:max="${balance}">
+                            <input type="number"
+                                   class="form-control"
+                                   id="moneyAmount"
+                                   name="amount"
+                                   required
+                                   th:max="${balance}"
+                                   step="0.0001" min="10">
                         </div>
                         <div class="form-group">
                             <label for="moneyUserId">User ID</label>
@@ -37,11 +43,16 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Crypto Transfer</h5>
-                    <form action="/transfer" method="post">
+                    <form action="/transfer/coin" method="post">
                         <input type="hidden" name="type" value="CoinTransferRequest">
                         <div class="form-group">
                             <label for="coinAmount">Amount</label>
-                            <input type="number" class="form-control" id="coinAmount" name="amount" required>
+                            <input type="number"
+                                   class="form-control"
+                                   id="coinAmount"
+                                   name="amount"
+                                   required
+                                   step="0.0001" min="0.0001">
                         </div>
                         <div class="form-group">
                             <label for="coinUserId">User ID</label>
