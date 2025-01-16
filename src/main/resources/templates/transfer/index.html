@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="row mt-5">
+        <!-- Money Transfer Card -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Money Transfer</h5>
+                    <form action="/transfer" method="post">
+                        <input type="hidden" name="type" value="MoneyTransferRequest">
+
+
+                        <div class="form-group">
+                            <label for="moneyAmount" th:text="'Amount to send. (Up to ' + ${balance} + ')'"></label>
+                            <input type="number" class="form-control" id="moneyAmount" name="amount" required th:max="${balance}">
+                        </div>
+                        <div class="form-group">
+                            <label for="moneyUserId">User ID</label>
+                            <input type="number" class="form-control" id="moneyUserId" name="userId" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Transfer Money</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crypto Transfer Card -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Crypto Transfer</h5>
+                    <form action="/transfer" method="post">
+                        <input type="hidden" name="type" value="CoinTransferRequest">
+                        <div class="form-group">
+                            <label for="coinAmount">Amount</label>
+                            <input type="number" class="form-control" id="coinAmount" name="amount" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coinUserId">User ID</label>
+                            <input type="number" class="form-control" id="coinUserId" name="userId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="coinSelect">Select Coin</label>
+                            <select class="form-control" id="coinSelect" name="coinName" required>
+                                <th:block th:each="coin : ${userCoins}">
+                                    <option th:value="${coin.getCoin().getName()}" th:text="${coin.getCoin().getName()}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Transfer Crypto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -3,7 +3,6 @@ package ohonovskiy.ua.buycrypto.service;
 
 import ohonovskiy.ua.buycrypto.DTO.UsernamePasswordRequest;
 import ohonovskiy.ua.buycrypto.enums.OrderType;
-import ohonovskiy.ua.buycrypto.model.crypto.Order;
 import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.repository.UserRepo;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -27,6 +27,11 @@ public class UserService implements UserDetailsService {
 
     public void save(User user) {
         userRepo.save(user);
+    }
+
+    public User getById(Long userId) {
+        return userRepo.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("Can't find user with id: " + userId));
     }
 
     public void delete(User user) {
@@ -59,8 +64,9 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public Optional<User> getByUsername(String username) {
-        return userRepo.findFirstByUsername(username);
+    public User getByUsername(String username) {
+        return userRepo.findFirstByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("Can't find user with username: " + username));
     }
 
     public void register(UsernamePasswordRequest request) {
@@ -71,9 +77,9 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Either of fields can be null");
         }
 
-        getByUsername(username).ifPresent(existingUser -> {
+        if(userRepo.findFirstByUsername(username).isPresent()) {
             throw new IllegalArgumentException("Username '" + username + "' is already taken");
-        });
+        }
 
         save (
                 User.builder()
@@ -85,10 +91,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return getByUsername(username)
-                .orElseThrow(
-                        () -> new UsernameNotFoundException("User not found with username: " + username)
-                );
+        return getByUsername(username);
     }
 
     public User getCurrentUser() {
@@ -99,8 +102,7 @@ public class UserService implements UserDetailsService {
                                         .getAuthentication()
                                         .getPrincipal())
                                 .getUsername()
-                )
-                .orElseThrow(() -> new UsernameNotFoundException("Can't can current user"));
+                );
 
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoinService {
@@ -142,7 +143,7 @@ public class CoinService {
                 new IllegalArgumentException("User doesn't have such coin: " + coin.getName()));
 
         if (userCoin.getAmount() < amount) {
-            throw new IllegalArgumentException("Not enough coins to sell");
+            throw new IllegalArgumentException("Not enough coins");
         }
 
         userCoin.setAmount(userCoin.getAmount() - amount);
@@ -150,5 +151,9 @@ public class CoinService {
         if (userCoin.getAmount() == 0) {
             user.getUserCoins().remove(userCoin);
         }
+    }
+
+    public List<UserCoin> getAllForCurrentUser() {
+        return userService.getCurrentUser().getUserCoins();
     }
 }

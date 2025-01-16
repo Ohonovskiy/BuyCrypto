@@ -23,20 +23,13 @@ public class TradingService {
     @Transactional
     public void buyCoin(String coinName, Double amount, User user) {
 
-        User currentUser = userService.getByUsername(user.getUsername())
-                .orElseThrow(IllegalArgumentException::new);
+        User currentUser = userService.getByUsername(user.getUsername());
 
         Coin coinToBuy = coinService.getByName(coinName);
 
-        double totalCost = coinToBuy.getPrice() * amount;
-
-        if (currentUser.getBalance() < totalCost) {
-            throw new RuntimeException("Not enough money!");
-        }
+        currentUser.removeFromBalance(coinToBuy.getPrice() * amount);
 
         coinService.addCoinToUser(currentUser, coinToBuy, amount);
-
-        currentUser.setBalance(currentUser.getBalance() - totalCost);
 
         userService.save(currentUser);
     }
@@ -52,8 +45,7 @@ public class TradingService {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
 
-        User currentUser = userService.getByUsername(user.getUsername())
-                .orElseThrow(IllegalArgumentException::new);
+        User currentUser = userService.getByUsername(user.getUsername());
 
         Coin coinToSell = coinService.getByName(coinName);
         if (coinToSell == null) {

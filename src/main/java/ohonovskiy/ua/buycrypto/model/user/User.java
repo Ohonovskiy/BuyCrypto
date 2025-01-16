@@ -6,6 +6,7 @@ import ohonovskiy.ua.buycrypto.enums.RoleType;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 import ohonovskiy.ua.buycrypto.model.crypto.Order;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
+import ohonovskiy.ua.buycrypto.util.exception.NotEnoughBalanceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,19 +80,25 @@ public class User extends SimpleEntityModel implements UserDetails {
         this.orders.remove(order);
     }
 
-    public void setInvested(Double newInvested) {
-        if(newInvested < invested)
-            throw new IllegalArgumentException("Can't decrease the value.");
-
-        this.invested = newInvested;
-    }
-
     public void addBalance(Double balanceToAdd) {
         this.balance += balanceToAdd;
     }
 
+    public void removeFromBalance(Double amount) {
+        if(this.balance < amount)
+            throw new NotEnoughBalanceException("Not enough balance.");
+
+        this.balance -= amount;
+    }
+
+    public void withdrawMoney(Double amountToDecrease) {
+        removeFromBalance(amountToDecrease);
+
+        this.invested -= amountToDecrease;
+    }
+
     public void invest(Double sum) {
-        this.balance += sum;
+        addBalance(sum);
         this.invested += sum;
     }
 }
