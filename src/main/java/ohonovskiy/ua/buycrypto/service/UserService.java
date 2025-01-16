@@ -3,6 +3,7 @@ package ohonovskiy.ua.buycrypto.service;
 
 import ohonovskiy.ua.buycrypto.DTO.UsernamePasswordRequest;
 import ohonovskiy.ua.buycrypto.enums.OrderType;
+import ohonovskiy.ua.buycrypto.model.crypto.Order;
 import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.repository.UserRepo;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,15 +47,15 @@ public class UserService implements UserDetailsService {
 
         Double buyOrdersValue = currentUser.getOrders().stream()
                 .filter(order -> order.getOrderType() == OrderType.ORDER_BUY)
-                .mapToDouble(order -> order.getAmount() * order.getPrice())
+                .mapToDouble(order -> order.getPrice() * order.getAmount())
                 .sum();
 
         Double coinValue = currentUser.getUserCoins().stream()
                 .mapToDouble(uc -> uc.getCoin().getPrice() * uc.getAmount())
                 .sum();
 
-        // ROI = Current Balance + Total Coin Value + Sell Orders - Buy Orders - Initial Investment
-        return currentUser.getBalance() + coinValue - sellOrdersValue - buyOrdersValue - currentUser.getInvested();
+        // ROI = Current Balance + Total Coin Value + Sell Orders + Buy Orders - Initial Investment
+        return currentUser.getBalance() + coinValue + sellOrdersValue + buyOrdersValue - currentUser.getInvested();
     }
 
 
