@@ -23,7 +23,7 @@ public class ScheduleService {
 
     @Scheduled(fixedRate = SCHEDULE_TIME)
     public void scheduler() {
-        //coinService.updateCoinPricesAndSaveChart();
+        coinService.updateCoinPricesAndSaveChart();
         orderService.checkAndCompleteOrders();
     }
 }
