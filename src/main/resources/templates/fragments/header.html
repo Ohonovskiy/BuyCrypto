@@ -1,24 +1,31 @@
-<header>
+<header xmlns:sec="http://www.w3.org/1999/xhtml">
   <div id="logo">
-    <a href="./index.html">
+    <a th:href="@{/}">
       <img src="./img/logo-white.png" alt="">
     </a>
   </div>
   <ul class="nav" id="nav">
     <ul class="navLogo">
-      <a href="./index.html">
-        <img src="./img/logo-white.png" alt="">
+      <a th:href="@{/}">
+        <img src="/img/logo-white.png" alt="">
       </a>
     </ul>
 
-    <li class="nav-link"><a href="../index/index.html">Home</a></li>
-    <li class="nav-link"><a href="../about-us.html">About Us</a></li>
-    <li class="nav-link"><a href="./contact.html">Contact</a></li>
+    <li class="nav-link"><a th:href="@{/}">Home</a></li>
+    <li class="nav-link"><a th:href="@{/about-us}">About Us</a></li>
+    <li class="nav-link"><a th:href="@{/contact}">Contact</a></li>
+
+    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/sign-in}">Login</a></li>
+    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/sign-up}">Registration</a></li>
+
+    <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/user}">Profile</a></li>
+    <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/coin}">Market</a></li>
+
     <li class="sociallinkContainer">
-      <img class="sociallink" src="./img/fabook-icon-white.svg" alt="">
-      <img class="sociallink" src="./img/twitter-icon-white.svg" alt="">
-      <img class="sociallink" src="./img/inkedin-icon-white.svg" alt="">
-      <img class="sociallink" src="./img/whatsapp-icon-white.svg" alt="">
+      <img class="sociallink" src="/img/fabook-icon-white.svg" alt="">
+      <img class="sociallink" src="/img/twitter-icon-white.svg" alt="">
+      <img class="sociallink" src="/img/inkedin-icon-white.svg" alt="">
+      <img class="sociallink" src="/img/whatsapp-icon-white.svg" alt="">
     </li>
   </ul>
   <div id="barContainer">

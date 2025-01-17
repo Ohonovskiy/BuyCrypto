@@ -169,25 +169,18 @@ header{
 }
 
 
-.eachCarousel {
+
+
+.eachCarousel{
+    background-color: var(--lightgrey);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 1em;
     border-radius: 20px;
     margin: auto;
     width: 100%;
-    height: 300px; /* Ensure this matches your carousel container size */
-    overflow: hidden; /* Prevent any content from overflowing */
-    box-sizing: border-box;
-}
-
-.eachCarousel img {
-    width: 100% !important;
-    height: auto !important;
-    max-height: 20px !important;
-    object-fit: cover !important;
-    border-radius: 10px !important;
+    height: 250px;
 }
 
 .carouselDesc{

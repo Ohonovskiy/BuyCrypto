@@ -10,8 +10,7 @@
 </head>
 <body>
 
-    <!-- Header -->
-    <header th:insert="fragments/header.html :: header"> </header>
+    <header th:insert="~{fragments/header.html :: header}"> </header>
 
     <!-- Hero page -->
     <section class="hero gridSection">
@@ -25,12 +24,11 @@
                 someone erasing or stealing your money!
             </p>
             <div class="btnContainer">
-                <button class="btn btn1">Contact Now</button>
-                <button class="btn btn2">play video <i class="fa-solid fa-play"></i></button>
+                <a class="btn btn1" th:href="@{/contact}">Contact Now</a>
             </div>
         </div>
         <div class="sectionPic bouncepic" id="sectionPic">
-            <img src="imgero-image.png" alt="">
+            <img src="/img/hero-image.png" alt="">
         </div>
     </section>
 
@@ -38,7 +36,7 @@
     <section>
         <div class="carouselContainer">
             <div th:each="coin : ${coins}" class="eachCarousel eachCarouselBorder">
-                <img th:src="@{${coin.imgUrl}}" th:alt="${coin.name}">
+                <img th:src="@{${coin.imgUrl}}" th:alt="${coin.name}" style="height: 100px; width: 100px">
                 <article class="carouselDesc">
                     <h1 class="carouselTitle" th:text="${coin.name}">Coin Name</h1>
                     <p class="carouselPara">Bitcoin is an innovative payment network</p>
@@ -73,7 +71,7 @@
               coins.
             </p>
             <div class="eachProcesses">
-                <img src="imgandshake-icon-white-line.svg" alt="handshake">
+                <img src="/img/handshake-icon-white-line.svg" alt="handshake">
                 <div class="eachprocessesPara">
                     <h1 class="processTitle">Trading</h1>
                     <p>
@@ -83,7 +81,7 @@
                 </div>
             </div>
             <div class="eachProcesses">
-                <img src="imgart-icon-white-line.svg" alt="handshake">
+                <img src="/img/cart-icon-white-line.svg" alt="handshake">
                 <div class="eachprocessesPara">
                     <h1 class="processTitle">Buying</h1>
                     <p>
@@ -94,7 +92,7 @@
             </div>
         </div>
         <div class="sectionPic bouncepic processesPic" id="sectionPic">
-            <img src="imghain-process-img.png" alt="">
+            <img src="/img/chain-process-img.png" alt="">
         </div>
     </section>
 
@@ -107,7 +105,7 @@
                 confirmed
             </p>
             <div class="eachMarket">
-                <img src="imguy-icon-color.svg" alt="handshake">
+                <img src="/img/buy-icon-color.svg" alt="handshake">
                 <div>
                     <h1 class="marketTitle">Buying</h1>
                     <p class="darkPara">
@@ -118,7 +116,7 @@
                 </div>
             </div>
             <div class="eachMarket">
-                <img src="imgrading-icon-color.svg" alt="handshake">
+                <img src="/img/trading-icon-color.svg" alt="handshake">
                 <div>
                     <h1 class="marketTitle">Trading</h1>
                     <p class="darkPara">
@@ -128,7 +126,7 @@
                 </div>
             </div>
             <div class="eachMarket">
-                <img src="imgupport-icon-color.svg" alt="handshake">
+                <img src="/img/support-icon-color.svg" alt="handshake">
                 <div>
                     <h1 class="marketTitle">Supporting</h1>
                     <p class="darkPara">
@@ -139,7 +137,7 @@
                 </div>
             </div>
             <div class="eachMarket">
-                <img src="imgnline-icon-color.svg" alt="handshake">
+                <img src="/img/online-icon-color.svg" alt="handshake">
                 <div>
                     <h1 class="marketTitle">Online</h1>
                     <p class="darkPara">
@@ -155,22 +153,22 @@
            <h1 class="marketspicHeader">CRYPTOCURRENCY</h1>
             <div class="marketsPicContainer">
                 <div class="marketPic marketPic1">
-                    <img src="imgersent-icon-white.svg" alt="">
+                    <img src="/img/persent-icon-white.svg" alt="">
                     <article class="marketTitle">Hot Sale</article>
                 </div>
     
                 <div class="marketPic marketPic2">
-                    <img src="imgitcoin-icon-white.svg" alt="">
+                    <img src="/img/bitcoin-icon-white.svg" alt="">
                     <article class="marketTitle">Bit coin</article>
                 </div>
     
                 <div class="marketPic marketPic3">
-                    <img src="imgthereum-white-icon.svg" alt="">
+                    <img src="/img/ethereum-white-icon.svg" alt="">
                     <article class="marketTitle">ETHEREUM</article>
                 </div>
     
                 <div class="marketPic marketPic4">
-                    <img src="imgandshake-icon-white.svg" alt="">
+                    <img src="/img/handshake-icon-white.svg" alt="">
                     <article class="marketTitle">CONNECTING</article>
                 </div>
             </div>
@@ -189,7 +187,7 @@
         </div>
 
         <div class="sectionPic dashboardPic">
-            <img src="imgashboard-dark.jpg" alt="">
+            <img src="/img/dashboard-dark.jpg" alt="">
         </div>
 
     </section>
@@ -202,7 +200,7 @@
             </p>
             <div class="fundsContainer">
                 <div class="fund">
-                    <img src="imgryptocurrency-white-icon.svg" alt="cryptocurrency">
+                    <img src="/img/cryptocurrency-white-icon.svg" alt="cryptocurrency">
                     <h1 class="fundType">Support All Currency</h1>
                     <p class="darkPara">
                         Accept and process payments from all types of currencies.
@@ -210,7 +208,7 @@
                 </div>
 
                 <div class="fund">
-                    <img src="imglockchain-white-icon.svg" alt="cryptocurrency">
+                    <img src="/img/blockchain-white-icon.svg" alt="cryptocurrency">
                     <h1 class="fundType">Block Chain System</h1>
                     <p class="darkPara">
                         How it Works, Benefits and its Deployment in Financial
@@ -218,7 +216,7 @@
                 </div>
 
                 <div class="fund">
-                    <img src="imgryptocurrency-sell-white-icon.svg" alt="cryptocurrency">
+                    <img src="/img/cryptocurrency-sell-white-icon.svg" alt="cryptocurrency">
                     <h1 class="fundType">Fund Selling</h1>
                     <p class="darkPara">
                         How to Profit in the Crypto Markets through Investing
@@ -226,7 +224,7 @@
                 </div>
 
                 <div class="fund">
-                    <img src="imgryptocurrency-card-white-icon.svg" alt="cryptocurrency">
+                    <img src="/img/cryptocurrency-card-white-icon.svg" alt="cryptocurrency">
                     <h1 class="fundType">Crypto Card</h1>
                     <p class="darkPara">
                         Crypto Cards and Why Cryptocurrency are the Future
@@ -248,11 +246,11 @@
             </form>
         </div>
         <div class="sectionPic bouncepic newsletterPic">
-            <img src="imgewsletter.png" alt="">
+            <img src="/img/newsletter.png" alt="">
         </div>
     </section>
 
-    <div th:replace="fragments/footer.html :: footer"></div>
+    <div th:replace="~{fragments/footer.html :: footer}"></div>
     
 
     <script src="/js/script.js"></script>

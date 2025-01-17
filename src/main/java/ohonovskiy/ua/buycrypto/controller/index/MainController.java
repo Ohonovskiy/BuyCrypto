@@ -22,4 +22,14 @@ public class MainController {
 
         return "index/index";
     }
+
+    @GetMapping("/about-us")
+    public String aboutUs() {
+        return "index/about-us";
+    }
+
+    @GetMapping("/contact")
+    public String contact() {
+        return "index/contact";
+    }
 }
