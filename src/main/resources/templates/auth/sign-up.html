@@ -4,27 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <link rel="stylesheet" href="/css/commonStyle.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script src="https://kit.fontawesome.com/aa7454d09f.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<h1>Sign Up</h1>
-<form id="signUpForm">
-    <div th:if="${errors}">
+<!-- Header -->
+<header th:insert="~{fragments/header.html :: header}"></header>
 
+<!-- Sign-up form -->
+<section class="gridSection contactSection">
+    <div class="contactformContainer">
+        <h1 class="sectionHeader">Sign Up</h1>
+        <form id="signUpForm" method="post" action="/auth/sign-up">
+            <div>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Username"
+                        class="contactInput"
+                        required>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Password"
+                        class="contactInput"
+                        required>
+            </div>
+            <button type="submit" class="btn primaryBtn contactBtn">Sign Up</button>
+            <a class="btn contactBtn" th:href="@{/auth/sign-in}">Already have an account?</a>
+        </form>
     </div>
-    <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+    <div class="sectionPic bouncepic contactPic" id="sectionPic">
+        <img src="/img/contact-img.png" alt="">
     </div>
-    <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-    </div>
-    <button type="submit">Sign Up</button>
-</form>
+</section>
+
+<!-- Footer -->
+<div th:replace="~{fragments/footer.html :: footer}"></div>
 
 <script>
     document.getElementById("signUpForm").addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent the default form submission behavior
+        event.preventDefault(); // Prevent default form submission
 
         const username = document.getElementById("username").value;
         const password = document.getElementById("password").value;
@@ -44,7 +68,7 @@
             });
 
             if (response.ok) {
-                window.location.href = "/sign-in";
+                window.location.href = "/auth/sign-in";
             } else {
                 alert("Sign-up failed. Please try again.");
             }
