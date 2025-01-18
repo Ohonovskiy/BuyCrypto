@@ -24,7 +24,7 @@ public class CoinController {
 
     @GetMapping("/{coinName}")
     public String getCoin(@PathVariable String coinName, Model model) {
-        model.addAttribute("coin", coinService.getByName(coinName));
+        model.addAttribute("coin", coinService.getDTOByName(coinName));
         model.addAttribute("coinAmount", coinService.getCoinAmountForCurrentUser(coinName));
         model.addAttribute("user", userService.getCurrentUser());
         model.addAttribute("charts", chartService.getPriceHistory(coinName));

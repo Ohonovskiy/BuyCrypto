@@ -1,5 +1,7 @@
 package ohonovskiy.ua.buycrypto.service;
 
+import jakarta.transaction.Transactional;
+import ohonovskiy.ua.buycrypto.DTO.CoinDTO;
 import ohonovskiy.ua.buycrypto.model.chart.Chart;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
@@ -15,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CoinService {
@@ -53,17 +54,35 @@ public class CoinService {
         return userCoin.isPresent() ? userCoin.get().getAmount() : 0.;
     }
 
+    @Transactional
     public Coin getByName(String name) {
         return coinRepo.findFirstByName(name.toUpperCase())
                 .orElseThrow(() -> new NoSuchElementException("No crypto with name: " + name + " was found"));
     }
 
+    public CoinDTO getDTOByName(String name) {
+        return coinToCoinDTO(coinRepo.findFirstByName(name.toUpperCase())
+                .orElseThrow(() -> new NoSuchElementException("No crypto with name: " + name + " was found")));
+    }
+
+    public CoinDTO coinToCoinDTO(Coin coin) {
+        return CoinDTO.builder()
+                .description(coin.getDescription())
+                .imgUrl(coin.getImgUrl())
+                .price(coin.getPrice())
+                .name(coin.getName())
+                .build();
+    }
+
+
+    @Transactional
     public List<Coin> getAll() {
         return coinRepo.findAll();
     }
 
 
 
+    @Transactional
     protected void updateCoinPricesAndSaveChart() {
 
         // Getting coin info
@@ -101,6 +120,7 @@ public class CoinService {
                         },
                         () -> {
                             Coin newCoin = new Coin();
+
                             chart.setPrice(price);
                             chart.setCoin(newCoin);
 
@@ -156,4 +176,6 @@ public class CoinService {
     public List<UserCoin> getAllForCurrentUser() {
         return userService.getCurrentUser().getUserCoins();
     }
+
+
 }

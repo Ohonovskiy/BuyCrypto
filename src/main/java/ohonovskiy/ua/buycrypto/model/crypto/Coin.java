@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 import ohonovskiy.ua.buycrypto.model.chart.Chart;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 @Builder
 @ToString
+@BatchSize(size = 7)
 public class Coin extends SimpleEntityModel {
 
     private Double price;
@@ -26,7 +28,7 @@ public class Coin extends SimpleEntityModel {
 
     private String description;
 
-    @OneToMany(mappedBy = "coin", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "coin", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Chart> charts = new ArrayList<>();
 

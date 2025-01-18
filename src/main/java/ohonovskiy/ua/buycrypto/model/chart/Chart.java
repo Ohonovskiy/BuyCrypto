@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
+import org.hibernate.annotations.BatchSize;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -14,6 +15,7 @@ import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 @Entity
 @Data
 @Builder
+@BatchSize(size = 5)
 public class Chart extends SimpleEntityModel {
 
     // use parent createdOn for chart time
