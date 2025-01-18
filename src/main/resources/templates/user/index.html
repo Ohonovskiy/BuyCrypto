@@ -2,69 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0;
-        }
-        .balance {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #2c3e50;
-        }
-        .coins-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .coins-table th, .coins-table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-            text-align: center;
-        }
-        .coins-table th {
-            background-color: #f8f8f8;
-        }
-        .coin-img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/commonStyle.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://kit.fontawesome.com/aa7454d09f.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1 th:text="'Welcome, ' + ${user.username} + '!'"></h1>
+<header th:insert="~{fragments/header.html :: header}"> </header>
+
+<section class="hero gridSection">
+    <div class="sectionDesc" style="display: ruby">
+        <h1 class="headline">
+            Welcome <span class="cryptoText" th:text="${user.username}">username</span>.
+        </h1>
+        <p class="sub-headline">
+            You can see all of your coins
+            anytime you want and never have to worry about
+            someone erasing or stealing your money!
+        </p>
+        <div class="btnContainer">
+            <button class="btn btn1" th:text="${'Balance: $' + #numbers.formatDecimal(user.balance, 0, 2)}"></button>
+        </div>
+        <div class="btnContainer">
+            <button class="btn btn1" th:text="${'ROI: $' + #numbers.formatDecimal(roi, 0, 2)}"></button>
+        </div>
+        <div class="btnContainer" style="margin-top: 2.5em;">
+            <a class="btn btn1" th:href="@{/payment}">Not enough?</a>
+        </div>
     </div>
-    <div class="balance">
-        Balance: $<span th:text="${user.balance}"></span>
-        <span><a th:href="@{/payment}">Not enough?</a></span>
+    <div class="sectionPic bouncepic" id="sectionPic">
+        <img src="/img/newsletter.png" alt="">
     </div>
-    <div class="balance">
-        ROI: $<span th:text="${roi}">0</span>
-    </div>
-    <div class="coins">
-        <h2>Your Coins</h2>
+</section>
+
+<section class="gridSection">
+    <div class="sectionDesc coinsDesc">
+        <h2 class="sectionHeader">Your Coins</h2>
         <table class="coins-table">
             <thead>
             <tr>
@@ -89,6 +61,12 @@
             </tbody>
         </table>
     </div>
-</div>
+    <div class="sectionPic">
+        <img src="/img/contact-img.png" alt="Coins">
+    </div>
+</section>
+
+<footer th:replace="~{fragments/footer.html :: footer}"></footer>
+<script src="/js/script.js"></script>
 </body>
 </html>
