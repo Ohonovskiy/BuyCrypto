@@ -24,6 +24,8 @@ public class Coin extends SimpleEntityModel {
 
     private String imgUrl;
 
+    private String description;
+
     @OneToMany(mappedBy = "coin", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     private List<Chart> charts = new ArrayList<>();
