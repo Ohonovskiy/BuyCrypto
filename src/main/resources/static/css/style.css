@@ -848,3 +848,27 @@ footer{
         font-size: 3.5rem;
     }
 }
+
+/* spiner */
+
+     /* Spinner styling */
+ .spinner {
+     border: 4px solid rgba(0, 0, 0, 0.1);
+     border-left-color: #fff;
+     border-radius: 50%;
+     width: 16px;
+     height: 16px;
+     animation: spin 1s linear infinite;
+     margin-left: 10px;
+     display: inline-block;
+     vertical-align: middle;
+ }
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

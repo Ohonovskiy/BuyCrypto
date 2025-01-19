@@ -2,6 +2,7 @@ package ohonovskiy.ua.buycrypto.controller.email;
 
 import ohonovskiy.ua.buycrypto.DTO.EmailSendRequest;
 import ohonovskiy.ua.buycrypto.service.EmailService;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -24,7 +24,10 @@
                     <input type="email" name="email" placeholder="Email" class="contactInput" required>
                 </div>
                 <textarea name="message" cols="30" rows="5" placeholder="Message" class="contactInput" required></textarea>
-                <button type="button" class="btn primaryBtn contactBtn" id="submitButton">Submit</button>
+                <button type="submit" class="btn primaryBtn contactBtn" id="submitButton">
+                    <span id="buttonText">Submit</span>
+                    <span class="spinner" id="spinner" style="display: none;"></span>
+                </button>
             </form>
         </div>
         <div class="sectionPic bouncepic contactPic" id="sectionPic">
@@ -63,12 +66,14 @@
     <script src="/js/script.js"></script>
 
 <script>
-    document.getElementById("submitButton").addEventListener("click", () => {
+    document.getElementById("submitButton").addEventListener("click", (event) => {
+        event.preventDefault(); // Prevent the default form submission
+
         const form = document.getElementById("contactForm");
 
         // Check form validity
-        if (!form.checkVisibility()) {
-            form.reportValidity(); // This will display validation errors in the browser
+        if (!form.checkValidity()) {
+            form.reportValidity(); // Display validation errors
             return;
         }
 
@@ -81,6 +86,15 @@
             jsonData[key] = value;
         });
 
+        // Disable the submit button and show the spinner
+        const submitButton = document.getElementById("submitButton");
+        const spinner = document.getElementById("spinner");
+        const buttonText = document.getElementById("buttonText");
+
+        submitButton.disabled = true;
+        buttonText.style.display = "none"; // Hide the "Submit" text
+        spinner.style.display = "inline-block"; // Show the spinner
+
         // Send JSON to the server
         fetch(form.action, {
             method: "POST",
@@ -90,19 +104,29 @@
             body: JSON.stringify(jsonData),
         })
             .then((response) => {
-                if (response.redirected) {
-                    window.location.href = response.url;
+                if (response.ok) {
+                    form.reset(); // Optionally reset the form
+                    window.location.href = "/"; // Redirect after success
                 } else {
-                    alert("Message sent successfully!");
+                    return response.text().then((text) => {
+                        throw new Error(text || "An error occurred");
+                    });
                 }
             })
             .catch((error) => {
                 console.error("Error:", error);
                 alert("An error occurred while sending the message.");
+            })
+            .finally(() => {
+                // Re-enable the submit button and hide the spinner
+                submitButton.disabled = false;
+                buttonText.style.display = "inline"; // Show the "Submit" text
+                spinner.style.display = "none"; // Hide the spinner
             });
     });
-;
 
 </script>
+
+
 </body>
 </html>
