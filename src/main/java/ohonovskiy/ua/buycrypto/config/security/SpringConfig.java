@@ -29,7 +29,7 @@ public class SpringConfig {
         return http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/about-us").permitAll()
-                        .requestMatchers("/contact").permitAll()
+                        .requestMatchers("/contact/**").permitAll()
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/js/**").permitAll()
                         .requestMatchers("/img/**").permitAll()

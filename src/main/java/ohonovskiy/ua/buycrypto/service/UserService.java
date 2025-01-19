@@ -1,6 +1,5 @@
 package ohonovskiy.ua.buycrypto.service;
 
-
 import ohonovskiy.ua.buycrypto.DTO.UsernamePasswordRequest;
 import ohonovskiy.ua.buycrypto.enums.OrderType;
 import ohonovskiy.ua.buycrypto.model.user.User;
@@ -13,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
