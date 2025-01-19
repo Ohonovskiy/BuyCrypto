@@ -492,6 +492,7 @@ footer{
     display: flex;
     align-items: center;
     padding: 3em 0em;
+    border-bottom: 1px solid var(--lightgrey);
 }
 
 .joinSection .joinDesc{
@@ -514,7 +515,6 @@ footer{
     gap: 30px;
     justify-content: space-between;
     padding-top: 5em;
-    border-top: 1px solid var(--lightgrey);
 }
 
 .footersociallinkContainer{

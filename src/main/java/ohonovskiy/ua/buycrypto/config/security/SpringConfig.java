@@ -1,6 +1,6 @@
 package ohonovskiy.ua.buycrypto.config.security;
 
-import ohonovskiy.ua.buycrypto.service.UserService;
+import ohonovskiy.ua.buycrypto.service.user.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;

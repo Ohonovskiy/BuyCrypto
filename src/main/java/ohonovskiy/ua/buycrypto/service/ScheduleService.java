@@ -1,5 +1,7 @@
 package ohonovskiy.ua.buycrypto.service;
 
+import ohonovskiy.ua.buycrypto.service.crypto.CoinService;
+import ohonovskiy.ua.buycrypto.service.crypto.OrderService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 

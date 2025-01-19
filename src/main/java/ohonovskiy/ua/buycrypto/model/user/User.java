@@ -3,7 +3,7 @@ package ohonovskiy.ua.buycrypto.model.user;
 import jakarta.persistence.*;
 import lombok.*;
 import ohonovskiy.ua.buycrypto.enums.RoleType;
-import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
+import ohonovskiy.ua.buycrypto.model.util.SimpleEntityModel;
 import ohonovskiy.ua.buycrypto.model.crypto.Order;
 import ohonovskiy.ua.buycrypto.model.crypto.UserCoin;
 import ohonovskiy.ua.buycrypto.util.exception.NotEnoughBalanceException;

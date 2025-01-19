@@ -2,8 +2,8 @@ package ohonovskiy.ua.buycrypto.model.crypto;
 
 import jakarta.persistence.*;
 import lombok.*;
-import ohonovskiy.ua.buycrypto.model.SimpleEntityModel;
-import ohonovskiy.ua.buycrypto.model.chart.Chart;
+import ohonovskiy.ua.buycrypto.model.util.SimpleEntityModel;
+import ohonovskiy.ua.buycrypto.model.crypto.chart.Chart;
 import org.hibernate.annotations.BatchSize;
 
 import java.util.ArrayList;
