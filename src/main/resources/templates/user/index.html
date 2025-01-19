@@ -34,12 +34,12 @@
     </div>
 </section>
 
-<section class="gridSection">
-    <div class="sectionDesc coinsDesc">
+<section class="gridSection" style="display: table;">
+    <div class="sectionDesc coinsDesc" style="justify-items: center; text-align: center">
         <h2 class="sectionHeader">Your Coins</h2>
-        <table class="coins-table">
+        <table class="coins-table" style="width: 90%; font-size: 20px; border-collapse: separate; border-spacing: 0 15px;">
             <thead>
-            <tr>
+            <tr style="border-bottom: 2px solid white;">
                 <th>Image</th>
                 <th>Name</th>
                 <th>Amount</th>
@@ -47,24 +47,24 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="userCoin : ${user.userCoins}">
+            <tr th:each="userCoin : ${user.userCoins}"
+                style="cursor: pointer; background-color: #1a1a2e; border-top: 1px solid white; border-bottom: 1px solid white;"
+                th:onclick="|window.location='@{/coin/{id}(id=${userCoin.coin.name})}'|">
                 <td>
-                    <img th:src="${userCoin.coin.imgUrl}" th:alt="${userCoin.coin.name}" class="coin-img">
+                    <img th:src="${userCoin.coin.imgUrl}" th:alt="${userCoin.coin.name}" style="width: 50px">
                 </td>
                 <td th:text="${userCoin.coin.name}"></td>
                 <td th:text="${userCoin.amount}"></td>
                 <td th:text="${userCoin.coin.price * userCoin.amount}"></td>
             </tr>
             <tr th:if="${user.userCoins.empty}">
-                <td colspan="4">You don't own any coins yet.</td>
+                <td colspan="4" style="text-align: center;">You don't own any coins yet.</td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div class="sectionPic">
-        <img src="/img/contact-img.png" alt="Coins">
-    </div>
 </section>
+
 
 <footer th:replace="~{fragments/footer.html :: footer}"></footer>
 <script src="/js/script.js"></script>
