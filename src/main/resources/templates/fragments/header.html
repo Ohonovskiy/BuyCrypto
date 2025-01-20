@@ -15,8 +15,8 @@
     <li class="nav-link"><a th:href="@{/about-us}">About Us</a></li>
     <li class="nav-link"><a th:href="@{/contact}">Contact</a></li>
 
-    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/sign-in}">Login</a></li>
-    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/sign-up}">Registration</a></li>
+    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/auth/sign-in}">Login</a></li>
+    <li class="nav-link" sec:authorize="isAnonymous()"><a th:href="@{/auth/sign-up}">Registration</a></li>
 
     <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/user}">Profile</a></li>
     <li class="nav-link" sec:authorize="isAuthenticated()"><a th:href="@{/coin}">Market</a></li>

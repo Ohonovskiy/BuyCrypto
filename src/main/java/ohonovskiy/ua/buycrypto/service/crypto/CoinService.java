@@ -84,7 +84,7 @@ public class CoinService {
 
 
     @Transactional
-    protected void updateCoinPricesAndSaveChart() {
+    public void updateCoinPricesAndSaveChart() {
 
         // Getting coin info
         String apiUrl = String.format(

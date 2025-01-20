@@ -448,8 +448,16 @@ header{
     background-color: transparent;
 }
 
-.newsletter input::placeholder{
+.newsletter input {
     color: var(--lightgrey);
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.newsletter input::placeholder {
+    color: var(--lightgrey);
+    font-family: inherit;
+    font-size: inherit;
 }
 
 .newsletter button{
