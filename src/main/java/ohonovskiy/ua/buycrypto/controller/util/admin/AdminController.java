@@ -1,6 +1,7 @@
 package ohonovskiy.ua.buycrypto.controller.util.admin;
 
-import ohonovskiy.ua.buycrypto.service.admin.AdminService;
+import ohonovskiy.ua.buycrypto.DTO.util.news.PostNewsRequest;
+import ohonovskiy.ua.buycrypto.service.util.news.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private final AdminService adminService;
+    private final NewsService newsService;
 
     @Autowired
-    public AdminController(AdminService adminService) {
-        this.adminService = adminService;
+    public AdminController(NewsService newsService) {
+        this.newsService = newsService;
     }
 
     @GetMapping("/news")
@@ -25,6 +26,8 @@ public class AdminController {
 
     @PostMapping("/news")
     public String postNews(@RequestBody PostNewsRequest postNewsRequest) {
-        adminService.handlePostNews(postNewsRequest);
+        newsService.postNews(postNewsRequest);
+
+        return "redirect:/admin/news";
     }
 }
