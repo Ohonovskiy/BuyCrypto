@@ -1,7 +1,6 @@
 package ohonovskiy.ua.buycrypto.controller.util.email;
 
-import ohonovskiy.ua.buycrypto.DTO.crypto.EmailSendRequest;
-import ohonovskiy.ua.buycrypto.enums.EmailSendType;
+import ohonovskiy.ua.buycrypto.DTO.util.email.EmailSendRequest;
 import ohonovskiy.ua.buycrypto.service.util.email.EmailService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,8 +18,8 @@ public class EmailController {
     }
 
     @PostMapping
-    public String sendEmail(@RequestBody EmailSendRequest emailSendRequest, @RequestBody EmailSendType emailSendType) {
-        emailService.handleRequest(emailSendRequest, emailSendType);
+    public String sendEmail(@RequestBody EmailSendRequest emailSendRequest) {
+        emailService.handleRequest(emailSendRequest);
         return "redirect:/";
     }
 }

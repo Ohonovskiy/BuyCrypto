@@ -1,6 +1,6 @@
 package ohonovskiy.ua.buycrypto.service.util.news;
 
-import ohonovskiy.ua.buycrypto.DTO.crypto.EmailSendRequest;
+import ohonovskiy.ua.buycrypto.DTO.util.email.EmailSendRequest;
 import ohonovskiy.ua.buycrypto.DTO.util.news.PostNewsRequest;
 import ohonovskiy.ua.buycrypto.enums.EmailSendType;
 import ohonovskiy.ua.buycrypto.model.util.news.NewsSubscriber;
@@ -48,8 +48,8 @@ public class NewsService {
                     EmailSendRequest.builder()
                             .message(postNewsRequest.getMessage())
                             .email(ns.getEmail())
-                            .build(),
-                    EmailSendType.NEWS
+                            .emailSendType(EmailSendType.NEWS)
+                            .build()
             );
         }
     }

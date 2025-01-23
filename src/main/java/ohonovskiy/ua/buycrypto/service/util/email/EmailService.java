@@ -3,8 +3,10 @@ package ohonovskiy.ua.buycrypto.service.util.email;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import lombok.Getter;
-import ohonovskiy.ua.buycrypto.DTO.crypto.EmailSendRequest;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ohonovskiy.ua.buycrypto.DTO.util.email.EmailSendRequest;
 import ohonovskiy.ua.buycrypto.enums.EmailSendType;
 import org.springframework.stereotype.Service;
 
@@ -30,37 +32,33 @@ public class EmailService {
 
     private final Map<EmailSendType, EmailTemplate> templates = new HashMap<>() {{
         put(EmailSendType.SUPPORT, new EmailTemplate(
-                "New email from user!",
                 "You're welcome, %s!",
                 """
                 Thank you for reaching out to us!
                 We’ve received your message and will get back to you as soon as possible.
                 Our team is here to assist you and typically responds within 3 business days.
-                """ + SIGNATURE
+                """ + SIGNATURE,
+                "New email from user!",
+                """
+                 User message:
+                 %s
+                 """ + SIGNATURE
         ));
         put(EmailSendType.NEWS, new EmailTemplate(
-                "Exciting News from BuyCrypto!",
-                "Hello %s, Check Out Our Latest Updates!",
+                "Hello! Check Out Our Latest Updates!",
                 """
                 We're thrilled to share some exciting news with you! Stay tuned for more updates.
+                %s
                 """ + SIGNATURE
         ));
     }};
 
-    public void handleRequest(EmailSendRequest emailSendRequest, EmailSendType emailSendType) {
-        sendEmail(emailSendRequest, emailSendType);
-    }
+    public void handleRequest(EmailSendRequest emailSendRequest) {
 
-    private void sendEmail(EmailSendRequest emailSendRequest, EmailSendType emailSendType) {
-        EmailTemplate template = templates.get(emailSendType);
-        if (template == null) {
-            throw new IllegalArgumentException("Unsupported email type: " + emailSendType);
-        }
-        sendEmailUtil(emailSendRequest, template);
-    }
+        EmailSendType sendType = emailSendRequest.getEmailSendType();
 
-    private void sendEmailUtil(EmailSendRequest emailSendRequest, EmailTemplate template) {
         Properties properties = new Properties();
+
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
@@ -75,50 +73,67 @@ public class EmailService {
 
         try {
             Message message = new MimeMessage(session);
+
             message.setFrom(new InternetAddress(username));
+
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(emailSendRequest.getEmail())
             );
 
-            message.setSubject(String.format(template.getSubject(), emailSendRequest.getFullName()));
+            if(sendType.equals(EmailSendType.SUPPORT)) {
+                message.setSubject(String.format(templates.get(sendType).getTeamHeader()));
 
-            String messageBody = template.getBody();
-            if (template.isForTeam()) {
-                messageBody = String.format(
-                        "User message:\n%s\n\nUser email: %s\n%s",
-                        emailSendRequest.getMessage(),
-                        emailSendRequest.getEmail(),
-                        SIGNATURE
+                message.setText(
+                        String.format(
+                                templates.get(sendType).getTeamBody(),
+                                emailSendRequest.getMessage()
+                        )
                 );
+
+                Transport.send(message);
+
+                message.setSubject(
+                        String.format(
+                                templates.get(sendType).getUserHeader(),
+                                emailSendRequest.getFullName()
+                        )
+                );
+
+                message.setText(templates.get(sendType).getUserBody());
+
+                Transport.send(message);
+
+            } else if (sendType.equals(EmailSendType.NEWS)) {
+                message.setSubject(templates.get(sendType).getUserHeader());
+
+                message.setText(
+                        String.format(
+                                templates.get(sendType).getUserBody(),
+                                emailSendRequest.getMessage()
+                        )
+                );
+
+                Transport.send(message);
             }
 
-            message.setText(messageBody);
-
-            Transport.send(message);
         } catch (MessagingException e) {
             System.err.println("Error occurred while sending email.");
         }
     }
+}
 
-    private static class EmailTemplate {
-        private final String teamSubject;
-        private final String userSubject;
-        @Getter
-        private final String body;
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+class EmailTemplate {
+    private String userHeader;
+    private String userBody;
+    private String teamHeader;
+    private String teamBody;
 
-        public EmailTemplate(String teamSubject, String userSubject, String body) {
-            this.teamSubject = teamSubject;
-            this.userSubject = userSubject;
-            this.body = body;
-        }
-
-        public String getSubject() {
-            return userSubject;
-        }
-
-        public boolean isForTeam() {
-            return teamSubject != null;
-        }
+    public EmailTemplate(String userHeader, String userBody) {
+        this.userHeader = userHeader;
+        this.userBody = userBody;
     }
 }
