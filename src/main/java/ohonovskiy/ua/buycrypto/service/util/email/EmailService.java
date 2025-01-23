@@ -10,130 +10,118 @@ import ohonovskiy.ua.buycrypto.DTO.util.email.EmailSendRequest;
 import ohonovskiy.ua.buycrypto.enums.EmailSendType;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
 
 @Service
 public class EmailService {
-    private final String username = "yuriy.ohonovskiy@gmail.com";
-    private final String password = "rqbt dwmf vxga hqzq";
 
-    private final String SIGNATURE =
-            """
-            \n
-            \n
-            \n
+    private static final String USERNAME = "yuriy.ohonovskiy@gmail.com";
+    private static final String PASSWORD = "rqbt dwmf vxga hqzq";
+    private static final String SIGNATURE = """
+            \n\n\n
             Best regards,
             BuyCrypto Team.
             +390 2813 100
             UK, London
             """;
 
-    private final Map<EmailSendType, EmailTemplate> templates = new HashMap<>() {{
-        put(EmailSendType.SUPPORT, new EmailTemplate(
+    private final Map<EmailSendType, EmailTemplate> templates;
+
+    public EmailService() {
+        templates = new EnumMap<>(EmailSendType.class);
+        templates.put(EmailSendType.SUPPORT, new EmailTemplate(
                 "You're welcome, %s!",
                 """
                 Thank you for reaching out to us!
                 We’ve received your message and will get back to you as soon as possible.
                 Our team is here to assist you and typically responds within 3 business days.
                 """ + SIGNATURE,
-                "New email from user!",
+                "New email from %s!",
                 """
-                 User message:
-                 %s
-                 """ + SIGNATURE
+                User message:
+                %s
+                
+                User email:
+                %s
+                """ + SIGNATURE
         ));
-        put(EmailSendType.NEWS, new EmailTemplate(
+        templates.put(EmailSendType.NEWS, new EmailTemplate(
                 "Hello! Check Out Our Latest Updates!",
                 """
                 We're thrilled to share some exciting news with you! Stay tuned for more updates.
                 %s
                 """ + SIGNATURE
         ));
-    }};
+    }
 
     public void handleRequest(EmailSendRequest emailSendRequest) {
+        try {
+            Session session = createEmailSession();
+            EmailSendType sendType = emailSendRequest.getEmailSendType();
+            EmailTemplate template = templates.get(sendType);
 
-        EmailSendType sendType = emailSendRequest.getEmailSendType();
+            if (template != null) {
+                switch (sendType.getScope()) {
+                    case USERS_ONLY -> sendEmail(session, emailSendRequest.getEmail(),
+                            String.format(template.getUserHeader(), emailSendRequest.getFullName()),
+                            String.format(template.getUserBody(), emailSendRequest.getMessage()));
 
+                    case SUPPORT_ONLY -> sendEmail(session, USERNAME, String.format(template.getTeamHeader(), emailSendRequest.getFullName()),
+                            String.format(template.getTeamBody(), emailSendRequest.getMessage(), emailSendRequest.getEmail()));
+
+                    case BOTH -> {
+                        sendEmail(session, emailSendRequest.getEmail(),
+                                String.format(template.getUserHeader(), emailSendRequest.getFullName()),
+                                String.format(template.getUserBody(), emailSendRequest.getMessage()));
+                        sendEmail(session, USERNAME, String.format(template.getTeamHeader(), emailSendRequest.getFullName()),
+                                String.format(template.getTeamBody(), emailSendRequest.getMessage(), emailSendRequest.getEmail()));
+                    }
+                }
+            }
+        } catch (MessagingException e) {
+            System.err.println("Error occurred while sending email: " + e.getMessage());
+        }
+    }
+
+
+    private Session createEmailSession() {
         Properties properties = new Properties();
-
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.port", "587");
         properties.put("mail.smtp.auth", "true");
         properties.put("mail.smtp.starttls.enable", "true");
 
-        Session session = Session.getInstance(properties, new Authenticator() {
+        return Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(username, password);
+                return new PasswordAuthentication(USERNAME, PASSWORD);
             }
         });
-
-        try {
-            Message message = new MimeMessage(session);
-
-            message.setFrom(new InternetAddress(username));
-
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(emailSendRequest.getEmail())
-            );
-
-            if(sendType.equals(EmailSendType.SUPPORT)) {
-                message.setSubject(String.format(templates.get(sendType).getTeamHeader()));
-
-                message.setText(
-                        String.format(
-                                templates.get(sendType).getTeamBody(),
-                                emailSendRequest.getMessage()
-                        )
-                );
-
-                Transport.send(message);
-
-                message.setSubject(
-                        String.format(
-                                templates.get(sendType).getUserHeader(),
-                                emailSendRequest.getFullName()
-                        )
-                );
-
-                message.setText(templates.get(sendType).getUserBody());
-
-                Transport.send(message);
-
-            } else if (sendType.equals(EmailSendType.NEWS)) {
-                message.setSubject(templates.get(sendType).getUserHeader());
-
-                message.setText(
-                        String.format(
-                                templates.get(sendType).getUserBody(),
-                                emailSendRequest.getMessage()
-                        )
-                );
-
-                Transport.send(message);
-            }
-
-        } catch (MessagingException e) {
-            System.err.println("Error occurred while sending email.");
-        }
     }
-}
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class EmailTemplate {
-    private String userHeader;
-    private String userBody;
-    private String teamHeader;
-    private String teamBody;
+    private void sendEmail(Session session, String recipient, String subject, String body) throws MessagingException {
+        Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(USERNAME));
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+        message.setSubject(subject);
+        message.setText(body);
+        Transport.send(message);
+    }
 
-    public EmailTemplate(String userHeader, String userBody) {
-        this.userHeader = userHeader;
-        this.userBody = userBody;
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    static class EmailTemplate {
+        private String userHeader;
+        private String userBody;
+        private String teamHeader;
+        private String teamBody;
+
+        public EmailTemplate(String userHeader, String userBody) {
+            this.userHeader = userHeader;
+            this.userBody = userBody;
+        }
     }
 }
