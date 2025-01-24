@@ -1,81 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-  <link rel="icon" href="/img/favicon.png" type="image/png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f4f4f9;
-    }
-    .payment-card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.9));
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      width: 400px;
-      text-align: center;
-    }
-    .card-number {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-    .payment-form input[type="number"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 16px;
-    }
-    .payment-form button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .payment-form button:hover {
-      background-color: #218838;
-    }
-    .payment-code {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #555;
-      word-break: break-all;
-    }
-  </style>
+  <link rel="icon" href="/img/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/css/commonStyle.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://kit.fontawesome.com/aa7454d09f.js" crossorigin="anonymous"></script>
 </head>
 <body>
-<div class="payment-card">
-  <div class="card-number">Card Number: XXXX-XXXX-XXXX-XXXX</div>
 
-  <form th:action="@{/payment}" method="post" class="payment-form">
-    <label for="amount">Amount ($):</label>
-    <input
-            type="number"
-            id="amount"
-            name="amount"
-            step="0.01"
-            min="0.01"
-            placeholder="Enter amount"
-            required>
-    <button type="submit">Send Payment</button>
-  </form>
+<header th:insert="~{fragments/header.html :: header}"> </header>
 
-  <div class="payment-code">
-    <span th:text="'Please specify this code in payment details: ' + ${user.getId() + '/' + #dates.createNow().time}"></span>
+<!-- Hero page -->
+<section class="hero gridSection">
+  <div class="sectionDesc">
+    <h1 class="headline">
+      Add funds to your <span class="cryptoText">ACCOUNT</span>.
+    </h1>
+    <p class="sub-headline">
+      On this page you can invest money.
+      After transferring funds to our card
+      enter exact amount into field and click Send payment.
+      Please make sure to specify generated code in payment details.
+    </p>
   </div>
-</div>
+  <div class="sectionPic" id="sectionPic">
+    <img src="/img/atm-card.svg" alt="">
+  </div>
+</section>
+
+<section class="joinSection" style="justify-content: center; align-items: center; display: flex; border-bottom: 0;">
+  <div class="sectionDesc">
+    <div style="text-align: center; margin-bottom: 10px">Card Number: 1009-3445-8888-9990</div>
+
+    <form th:action="@{/payment}" method="post" class="newsletter">
+      <input
+              type="number"
+              id="amount"
+              name="amount"
+              step="0.01"
+              min="0.01"
+              placeholder="Enter amount"
+              required>
+      <button type="submit" class="btn primaryBtn" style="width: 200px">Send Payment</button>
+    </form>
+
+    <div class="payment-code" style="margin-top: 10px">
+      <span th:text="'Please specify this code in payment details: ' + ${user.getId() + '/' + #dates.createNow().time}"></span>
+    </div>
+  </div>
+</section>
+
+
+<section class="gridSection">
+  <div class="sectionDesc newsletterDesc">
+    <h1 class="sectionHeader">Subscribe news!</h1>
+    <p class="sectionPara">
+      This is where crypto news websites come in handy and stay up-to-date this sphere.
+    </p>
+    <form action="/news/subscribe" method="POST" class="newsletter">
+      <input type="email" name="email" id="newsletter" placeholder="enter your email">
+      <button type="submit" class="btn primaryBtn">Subscribe</button>
+    </form>
+  </div>
+  <div class="sectionPic bouncepic newsletterPic">
+    <img src="/img/newsletter.png" alt="">
+  </div>
+</section>
+
+<div th:replace="~{fragments/footer.html :: footer}"></div>
+
+
+<script src="/js/script.js"></script>
 </body>
 </html>
