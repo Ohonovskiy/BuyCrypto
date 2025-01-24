@@ -1,4 +1,4 @@
-package ohonovskiy.ua.buycrypto.DTO.transfer;
+package ohonovskiy.ua.buycrypto.DTO.crypto.transfer;
 
 import lombok.Data;
 

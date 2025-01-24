@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="eng">
+<head>
+    <link rel="icon" href="/img/favicon.png" type="image/png">
+    <title th:text="${coin.name} + ' Trading'"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            height: 100vh;
+        }
+        .chart-container {
+            flex: 3;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+        }
+        .trading-container {
+            flex: 1;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            height: fit-content;
+        }
+        .coin-info {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .coin-img {
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .coin-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .coin-price {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .balance {
+            font-size: 16px;
+            color: #555;
+        }
+        .card {
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #efefef;
+        }
+        .card h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .trading-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .trading-form label {
+            font-size: 14px;
+            color: #333;
+        }
+        .trading-form input[type="number"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .trading-form button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        .trading-form button:hover {
+            background-color: #0056b3;
+        }
+        .trading-form button.sell {
+            background-color: #dc3545;
+        }
+        .trading-form button.sell:hover {
+            background-color: #c82333;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+</head>
+<body>
+<!-- Chart Section -->
+<div class="chart-container">
+    <canvas id="coinChart"></canvas>
+</div>
+
+<!-- Trading Panel -->
+<div class="trading-container">
+    <div class="coin-info">
+        <img th:src="${coin.imgUrl}" th:alt="${coin.name}" class="coin-img">
+        <div class="coin-name" th:text="${coin.name}"></div>
+        <div class="coin-price" th:text="'$' + ${coin.price}"></div>
+        <div class="balance" th:text="'Balance: $' + ${user.balance}"></div>
+        <div class="balance" th:text="'Coins: ' + ${coinAmount}"></div>
+    </div>
+
+    <!-- Instant Buy/Sell Section -->
+    <div class="card">
+        <h3>Instant Buy/Sell</h3>
+        <form th:action="@{/trading/buy}" method="post" class="trading-form">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="buyAmount">Amount to buy</label>
+            <input type="number" id="buyAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${user.getBalance() / coin.price}" placeholder="Enter amount" required>
+            <button type="submit">Buy</button>
+        </form>
+        <form th:action="@{/trading/sell}" method="post" class="trading-form">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="sellAmount">Amount to sell</label>
+            <input type="number" id="sellAmount" name="amount" step="0.01" min="0.01"
+                   th:max="${coinAmount}" placeholder="Enter amount" required>
+            <button type="submit" class="sell">Sell</button>
+        </form>
+    </div>
+
+    <!-- Order Creation Section -->
+    <div class="card">
+        <h3>Place Buy Order</h3>
+        <form th:action="@{/order}" method="post" class="trading-form">
+            <input type="hidden" name="orderType" value="ORDER_BUY">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+
+            <label for="buyOrderAmount">Amount to buy</label>
+            <input type="number" id="buyOrderAmount" name="amount" step="0.0001" min="0.0001"
+                   placeholder="Enter amount" required>
+
+            <label for="buyOrderPrice">Price</label>
+            <input type="number" id="buyOrderPrice" name="price" step="0.0001" min="0.0001"
+                   th:value="${coin.price}" placeholder="Enter price" required
+                   oninput="updateMaxAmount()">
+
+            <button type="submit">Place Buy Order</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h3>Place Sell Order</h3>
+        <form th:action="@{/order}" method="post" class="trading-form">
+            <input type="hidden" name="orderType" value="ORDER_SELL">
+            <input type="hidden" name="coinName" th:value="${coin.name}">
+            <label for="sellOrderAmount">Amount to sell</label>
+            <input type="number" id="sellOrderAmount" name="amount" step="0.0001" min="0.0001"
+                   th:max="${coinAmount}" placeholder="Enter amount" required>
+            <label for="sellOrderPrice">Price</label>
+            <input type="number" id="sellOrderPrice" name="price" step="0.0001" min="0.0001"
+                   th:value="${coin.price}" placeholder="Enter price" required>
+            <button type="submit" class="sell">Place Sell Order</button>
+        </form>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    function updateMaxAmount() {
+        const priceInput = document.getElementById('buyOrderPrice');
+        const amountInput = document.getElementById('buyOrderAmount');
+        const userBalance = /*[[${user.balance}]]*/;
+
+        // Update the max attribute of the amount input based on the order price
+        const orderPrice = parseFloat(priceInput.value) || 0;
+        if (orderPrice > 0) {
+            amountInput.max = (userBalance / orderPrice).toFixed(4);
+        } else {
+            amountInput.max = 0;
+        }
+    }
+
+    // Initialize max on page load
+    document.addEventListener('DOMContentLoaded', updateMaxAmount);
+    /*]]>*/
+</script>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    const charts = /*[[${charts}]]*/ [];
+    if (charts && charts.length > 0) {
+        const labels = charts.map(chart => new Date(chart.createdOn));
+        const prices = charts.map(chart => chart.price);
+
+        const ctx = document.getElementById('coinChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Price (USD)',
+                    data: prices,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'minute',
+                            tooltipFormat: 'MMM DD, YYYY HH:mm',
+                            displayFormats: {
+                                minute: 'HH:mm',
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Price (USD)'
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        console.error("No chart data available.");
+        document.getElementById('coinChart').innerHTML = "<p>No chart data available.</p>";
+    }
+    /*]]>*/
+</script>
+</body>
+</html>

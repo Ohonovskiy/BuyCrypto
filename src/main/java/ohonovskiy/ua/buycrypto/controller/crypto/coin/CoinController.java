@@ -1,4 +1,4 @@
-package ohonovskiy.ua.buycrypto.controller.crypto.coins;
+package ohonovskiy.ua.buycrypto.controller.crypto.coin;
 
 import ohonovskiy.ua.buycrypto.service.crypto.ChartService;
 import ohonovskiy.ua.buycrypto.service.crypto.CoinService;
@@ -22,6 +22,12 @@ public class CoinController {
         this.chartService = chartService;
     }
 
+    @GetMapping
+    public String coinsIndex(Model model) {
+        model.addAttribute("coins", coinService.getAll());
+        return "coin/index";
+    }
+
     @GetMapping("/{coinName}")
     public String getCoin(@PathVariable String coinName, Model model) {
         model.addAttribute("coin", coinService.getDTOByName(coinName));
@@ -29,7 +35,7 @@ public class CoinController {
         model.addAttribute("user", userService.getCurrentUser());
         model.addAttribute("charts", chartService.getPriceHistory(coinName));
 
-        return "coin/index";
+        return "coin/coin";
     }
 
 }

@@ -28,6 +28,7 @@ public class SpringConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/").permitAll()
+                        .requestMatchers("/coin").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/about-us").permitAll()
                         .requestMatchers("/contact/**").permitAll()

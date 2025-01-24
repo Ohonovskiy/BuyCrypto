@@ -1,7 +1,7 @@
 package ohonovskiy.ua.buycrypto.controller.crypto.transfer;
 
-import ohonovskiy.ua.buycrypto.DTO.transfer.CoinTransferRequest;
-import ohonovskiy.ua.buycrypto.DTO.transfer.MoneyTransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.crypto.transfer.CoinTransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.crypto.transfer.MoneyTransferRequest;
 import ohonovskiy.ua.buycrypto.service.crypto.CoinService;
 import ohonovskiy.ua.buycrypto.service.crypto.TransferService;
 import ohonovskiy.ua.buycrypto.service.user.UserService;

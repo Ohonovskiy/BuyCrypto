@@ -1,9 +1,9 @@
 package ohonovskiy.ua.buycrypto.service.crypto;
 
 import jakarta.transaction.Transactional;
-import ohonovskiy.ua.buycrypto.DTO.transfer.CoinTransferRequest;
-import ohonovskiy.ua.buycrypto.DTO.transfer.MoneyTransferRequest;
-import ohonovskiy.ua.buycrypto.DTO.transfer.TransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.crypto.transfer.CoinTransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.crypto.transfer.MoneyTransferRequest;
+import ohonovskiy.ua.buycrypto.DTO.crypto.transfer.TransferRequest;
 import ohonovskiy.ua.buycrypto.model.crypto.Coin;
 import ohonovskiy.ua.buycrypto.model.user.User;
 import ohonovskiy.ua.buycrypto.service.user.UserService;

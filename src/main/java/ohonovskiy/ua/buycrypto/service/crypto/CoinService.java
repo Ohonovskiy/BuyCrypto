@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CoinService {
@@ -64,6 +65,12 @@ public class CoinService {
     public CoinDTO getDTOByName(String name) {
         return coinToCoinDTO(coinRepo.findFirstByName(name.toUpperCase())
                 .orElseThrow(() -> new NoSuchElementException("No crypto with name: " + name + " was found")));
+    }
+
+    public List<CoinDTO> getAllDTO() {
+        return coinRepo.findAll().stream()
+                .map(c -> getDTOByName(c.getName()))
+                .collect(Collectors.toList());
     }
 
     public CoinDTO coinToCoinDTO(Coin coin) {
