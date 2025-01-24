@@ -43,14 +43,22 @@ public class NewsService {
     }
 
     public void postNews(PostNewsRequest postNewsRequest) {
-        for (NewsSubscriber ns : getAll()) {
-            emailService.handleRequest(
-                    EmailSendRequest.builder()
-                            .message(postNewsRequest.getMessage())
-                            .email(ns.getEmail())
-                            .emailSendType(EmailSendType.NEWS)
-                            .build()
+        List<NewsSubscriber> subscribers = getAll();
+
+        List<EmailSendRequest> emailRequests = subscribers.stream()
+                .map(ns -> EmailSendRequest.builder()
+                        .message(postNewsRequest.getMessage())
+                        .email(ns.getEmail())
+                        .emailSendType(EmailSendType.NEWS)
+                        .build())
+                .toList();
+
+        int batchSize = 50;
+        for (int i = 0; i < emailRequests.size(); i += batchSize) {
+            List<EmailSendRequest> batch = emailRequests.subList(
+                    i, Math.min(i + batchSize, emailRequests.size())
             );
+            emailService.handleBatchNewsRequest(batch);
         }
     }
 }

@@ -11,6 +11,7 @@ import ohonovskiy.ua.buycrypto.enums.EmailSendType;
 import org.springframework.stereotype.Service;
 
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -82,6 +83,23 @@ public class EmailService {
             }
         } catch (MessagingException e) {
             System.err.println("Error occurred while sending email: " + e.getMessage());
+        }
+    }
+
+    public void handleBatchNewsRequest(List<EmailSendRequest> emailSendRequests) {
+        try {
+            Session session = createEmailSession();
+            EmailTemplate template = templates.get(EmailSendType.NEWS); // Assuming all requests are for NEWS type
+
+            if (template != null) {
+                for (EmailSendRequest request : emailSendRequests) {
+                    String subject = template.getUserHeader();
+                    String body = String.format(template.getUserBody(), request.getMessage());
+                    sendEmail(session, request.getEmail(), subject, body);
+                }
+            }
+        } catch (MessagingException e) {
+            System.err.println("Error occurred while sending batch email: " + e.getMessage());
         }
     }
 
