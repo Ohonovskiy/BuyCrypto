@@ -30,7 +30,7 @@ Posting news (/admin/news)
 
 Java
 
-Spring (Boot \ Data)
+Spring (Boot \ Data \ Security)
 
 FlyWay
 
